@@ -4,3 +4,11 @@
 *.jar
 *.war
 *.ear
+
+# NXJ Binary Files #
+*.nxj
+*.nxd
+
+# Eclipse Files #
+bin/
+
