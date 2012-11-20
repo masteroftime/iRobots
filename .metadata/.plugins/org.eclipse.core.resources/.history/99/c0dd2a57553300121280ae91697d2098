@@ -1,0 +1,77 @@
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.io.File;
+
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+
+
+public class Sauron extends JFrame
+{
+	private Bluetooth gandalf;
+	private Bluetooth frodo;
+	private Bluetooth gimli;
+	private Bluetooth aragon;
+	private JPanel layout;
+	private JPanel gandalfPanel;
+	private JPanel frodoPanel;
+	private JPanel gimliPanel;
+	private JPanel aragonPanel;
+	private Icon gandalfIcon;
+	private Icon frodoIcon;
+	private Icon gimliIcon;
+	private Icon aragonfIcon;
+	private File fShy = new File("shy.png"); // shy
+    private File fCur = new File("curious.jpg"); // curious
+	private File fAgg= new File("aggressive.jpg"); // aggressive
+	private File fNcon = new File("notConnected.jpg"); // not connected
+	private File fPaus = new File("pause.gif");// pause
+	
+	public Sauron()
+	{
+		this.setTitle("Sauron");
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension dimension = toolkit.getScreenSize();
+		this.setSize(dimension);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		Font title = new Font("Ubuntu", Font.BOLD, 30);
+		this.setFont(title);
+		TitledBorder titleBorder = new TitledBorder("");
+		titleBorder.setTitleFont(title);
+		TitledBorder titleBorder2 = new TitledBorder("");
+		titleBorder2.setTitleFont(title);
+		TitledBorder titleBorder3 = new TitledBorder("");
+		titleBorder3.setTitleFont(title);
+		TitledBorder titleBorder4 = new TitledBorder("");
+		titleBorder4.setTitleFont(title);
+		layout = new JPanel(new GridLayout(2, 2));
+		//========================
+		gandalfPanel = new JPanel();
+		titleBorder.setTitle("Gandalf");
+		gandalfPanel.setBorder(titleBorder);
+		layout.add(gandalfPanel);
+		//========================
+		frodoPanel = new JPanel();
+		titleBorder2.setTitle("Frodo");
+		frodoPanel.setBorder(titleBorder2);
+		layout.add(frodoPanel);
+		//========================
+		gimliPanel = new JPanel();
+		titleBorder3.setTitle("Gimli");
+		gimliPanel.setBorder(titleBorder3);
+		layout.add(gimliPanel);
+		//========================
+		aragonPanel = new JPanel();
+		titleBorder4.setTitle("Aragon");
+		aragonPanel.setBorder(titleBorder4);
+		layout.add(aragonPanel);
+		//========================
+		this.add(layout);
+		this.setVisible(true);
+	}
+}

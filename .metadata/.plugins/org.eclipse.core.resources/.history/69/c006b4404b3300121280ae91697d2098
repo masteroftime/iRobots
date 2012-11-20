@@ -1,0 +1,45 @@
+
+public class Sauron 
+{
+	private Robot gandalf;
+	private Robot frodo;
+	private Robot aragon;
+	private Robot gimli;
+	
+	public Sauron()
+	{
+		
+	}
+
+	public Robot getGandalf() {
+		return gandalf;
+	}
+
+	public void setGandalf(Robot gandalf) {
+		this.gandalf = gandalf;
+	}
+
+	public Robot getFrodo() {
+		return frodo;
+	}
+
+	public void setFrodo(Robot frodo) {
+		this.frodo = frodo;
+	}
+
+	public Robot getAragon() {
+		return aragon;
+	}
+
+	public void setAragon(Robot aragon) {
+		this.aragon = aragon;
+	}
+
+	public Robot getGimli() {
+		return gimli;
+	}
+
+	public void setGimli(Robot gimli) {
+		this.gimli = gimli;
+	}
+}

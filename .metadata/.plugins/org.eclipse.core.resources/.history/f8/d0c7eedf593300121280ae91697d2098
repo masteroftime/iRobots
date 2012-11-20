@@ -1,0 +1,28 @@
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+
+import javax.swing.*;
+
+
+public class Notification extends JFrame
+{
+	private JTextArea notArea;
+	
+	public Notification()
+	{
+		this.setTitle("Notification Center");
+		this.setSize(new Dimension(200,200));
+		JPanel layout = new JPanel(new FlowLayout());
+		notArea = new JTextArea();
+		layout.add(notArea);
+		this.add(layout);
+		this.setDefaultCloseOperation(HIDE_ON_CLOSE);
+		this.setVisible(true);
+		
+	}
+	
+	public void addMessage(String text)
+	{
+		notArea.append(text+"@@@@");
+	}
+}

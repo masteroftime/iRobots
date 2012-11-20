@@ -1,0 +1,10 @@
+import javax.swing.JFrame;
+
+
+public class Report extends JFrame
+{
+	public Report()
+	{
+		
+	}
+}

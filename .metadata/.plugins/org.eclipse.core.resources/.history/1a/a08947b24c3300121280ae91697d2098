@@ -1,0 +1,10 @@
+import javax.swing.*;
+
+
+public class Notification
+{
+	public Notification(String text)
+	{
+		JOptionPane.showMessageDialog(null, text, "Info", JOptionPane.OK_CANCEL_OPTION);
+	}
+}

@@ -1,0 +1,18 @@
+import java.awt.Dimension;
+
+import javax.swing.*;
+
+
+public class Notification extends JFrame
+{
+	public Notification()
+	{
+		this.setTitle("Notification Center");
+		this.setSize(new Dimension(200,200));
+	}
+	
+	public void addMessage(String text)
+	{
+		
+	}
+}

@@ -1,0 +1,23 @@
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
+import javax.swing.JFrame;
+
+
+public class Sauron extends JFrame
+{
+	private Bluetooth gandalf;
+	private Bluetooth frodo;
+	private Bluetooth gimli;
+	private Bluetooth aragon;
+	
+	public Sauron()
+	{
+		this.setTitle("Sauron");
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension dimension = toolkit.getScreenSize();
+		this.setSize(dimension);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+	}
+}

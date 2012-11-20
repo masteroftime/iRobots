@@ -1,0 +1,47 @@
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
+
+
+public class Sauron extends JFrame
+{
+	private Bluetooth gandalf;
+	private Bluetooth frodo;
+	private Bluetooth gimli;
+	private Bluetooth aragon;
+	private JPanel layout;
+	private JPanel gandalfPanel;
+	private JPanel frodoPanel;
+	private JPanel gimliPanel;
+	private JPanel aragonPanel;
+	
+	public Sauron()
+	{
+		this.setTitle("Sauron");
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Dimension dimension = toolkit.getScreenSize();
+		this.setSize(dimension);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		layout = new JPanel(new GridLayout(2, 2));
+		gandalfPanel = new JPanel();
+		gandalfPanel.setBorder(new TitledBorder("Gandalf"));
+		layout.add(gandalfPanel);
+		frodoPanel = new JPanel();
+		frodoPanel.setBorder(new TitledBorder("Frodo"));
+		layout.add(frodoPanel);
+		gimliPanel = new JPanel();
+		gimliPanel.setBorder(new TitledBorder("Gimli"));
+		layout.add(gandalfPanel);
+		gandalfPanel = new JPanel();
+		gandalfPanel.setBorder(new TitledBorder("Gandalf"));
+		layout.add(gandalfPanel);
+		this.add(layout);
+		this.setVisible(true);
+	}
+}

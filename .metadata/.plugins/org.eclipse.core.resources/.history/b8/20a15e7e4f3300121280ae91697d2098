@@ -1,0 +1,14 @@
+import javax.swing.JFrame;
+
+
+public class Sauron extends JFrame
+{
+	private Bluetooth gandalf;
+	private Bluetooth frodo;
+	private Bluetooth gimli;
+	private Bluetooth aragon;
+	public Sauron()
+	{
+		
+	}
+}

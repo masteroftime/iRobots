@@ -1,0 +1,171 @@
+package code;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.HashMap;
+
+import lejos.pc.comm.NXTCommBluecove;
+import lejos.pc.comm.NXTCommException;
+import lejos.pc.comm.NXTInfo;
+
+public class IOThread extends Thread 
+{
+	private NXTInfo info;
+	private HashMap<String, String> macs;
+	private HashMap<String, String> names;
+	private NXTCommBluecove com;
+	private DataInputStream input;
+	private DataOutputStream output;
+	private String name;
+	private boolean run;
+	private Master master;
+	
+	public IOThread(String rob, Master master )
+	{
+		this.name = rob;
+		this.master = master;
+		run = true;
+		start();
+		
+	}
+	
+	public void run() 
+	{
+		while(run)
+		{
+			initializeHashMap();
+			info = new NXTInfo();
+			com = new NXTCommBluecove();
+			try 
+			{
+				read(name);
+			} catch (NXTCommException e) 
+			{
+				master.setStats(name + " is not connected :(", name);
+			}
+			try {
+				this.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+		System.out.println("Suche beendet");
+	}
+	
+	
+	//Fills the Map with the Roboter name as KEY and the bluetooth mac as Value
+	public void initializeHashMap()
+	{
+		macs = new HashMap<String, String>();
+		names = new HashMap<String, String>();
+		//ROB 6
+		macs.put("Rob 6", "0016530AD384");
+		//ROB 8
+		macs.put("Rob 10", "0016530DCEE1");
+		//ROB 9
+		macs.put("Rob 9", "0016530C619A");
+		//ROB 10
+		macs.put("Rob 8", "0016530AD64A");
+		//ROB 4
+		macs.put("Rob 4", "0016530C6794");
+		//ROB 6
+		names.put("0016530AD384", "Rob 6");
+		//ROB 8
+		names.put("0016530DCEE1", "Rob 10");
+		//ROB 9
+		names.put("0016530C619A", "Rob 9");
+		//ROB 10
+		names.put("0016530AD64A" , "Rob 8");
+		//ROB 4
+		names.put("0016530C6794", "Rob 4");
+	}
+	
+	// Name -> for example: Rob 6
+	public void read(String name) throws NXTCommException
+	{
+		info.deviceAddress = macs.get(name); //To get the current MAC
+		com.open(info); //establishing the connection
+		master.setStats("Verbindung mit " + names.get(info.deviceAddress) + " hergestellt", names.get(info.deviceAddress));
+		input = new DataInputStream(com.getInputStream()); //initializing DataInputStream
+		try
+		{
+			while(run)
+			{
+				int state = input.readInt();
+				switch(state)
+				{
+				case 1: //Shy
+					print(names.get(info.deviceAddress) + " is Shy");
+					master.setGif(this.name,1);
+					master.setStats(names.get(info.deviceAddress)+ " is Shy", names.get(info.deviceAddress));
+					break;
+				case 2: // Curious
+					print(names.get(info.deviceAddress) + " is Curious");
+					master.setGif(this.name,2);
+					master.setStats(names.get(info.deviceAddress)+ " is Curious", names.get(info.deviceAddress));
+
+					break;
+				case 3: //Aggressive
+					print(names.get(info.deviceAddress) + " is Aggressive");
+					master.setGif(this.name,3);
+					master.setStats(names.get(info.deviceAddress)+ " is Aggressive", names.get(info.deviceAddress));
+
+					break;
+				case 4:
+					print(names.get(info.deviceAddress) + " is paused");
+					master.setGif(this.name,4);
+					break;
+				default: // Actually 0
+					getState(0);
+					print("No Data transmitted :(" + state);
+				}
+			}
+		}
+		catch(EOFException e)
+		{
+			master.setStats("Slave " + names.get(info.deviceAddress) + " is disconnected", names.get(info.deviceAddress));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public synchronized void send(String name, int command)
+	{
+		output = new DataOutputStream(com.getOutputStream()); //initializing DataOutputStream
+		try {
+			output.writeInt(command);
+			output.flush();
+			output.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.err.println("could not find "+name);
+			master.setGif(name, 5);
+			
+		}
+		
+		
+	}
+	
+	public int getState(int state)
+	{
+		return state;
+	}
+	
+	public void setRun(boolean state)
+	{
+		if(!state){
+			master.setGif(this.name,4);
+		}
+		this.run = state;
+	}
+	
+
+    public void print(String s)
+    {
+    	System.out.println(s);
+    }
+}
+

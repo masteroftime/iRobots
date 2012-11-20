@@ -1,0 +1,31 @@
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+
+import javax.swing.*;
+
+
+public class Notification extends JFrame
+{
+	private JTextArea notArea;
+	
+	public Notification()
+	{
+		this.setTitle("Notification Center");
+		this.setSize(new Dimension(400,400));
+		JPanel layout = new JPanel(new BorderLayout());
+		JScrollPane scrollPane = new JScrollPane();
+		notArea = new JTextArea();
+		notArea.setSize(new Dimension(350,180));
+		notArea.add(scrollPane);
+		layout.add(notArea);
+		this.add(layout);
+		this.setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		this.setVisible(true);		
+	}
+	
+	public void addMessage(String text)
+	{
+		notArea.append(text+"\n");
+	}
+}

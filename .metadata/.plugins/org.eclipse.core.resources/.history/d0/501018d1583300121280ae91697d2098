@@ -1,0 +1,15 @@
+import javax.swing.*;
+
+
+public class Notification extends JFrame
+{
+	public Notification()
+	{
+		
+	}
+	
+	public void addMessage(String text)
+	{
+		
+	}
+}

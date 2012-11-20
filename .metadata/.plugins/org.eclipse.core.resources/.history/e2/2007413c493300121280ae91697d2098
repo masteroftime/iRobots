@@ -1,0 +1,6 @@
+
+public class Sauron 
+{
+	private Robot gandalf;
+	private Robot frodo;
+}

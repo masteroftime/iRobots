@@ -1,0 +1,337 @@
+package code;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.RenderingHints.Key;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.IOException;
+import java.net.*;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+
+import lejos.pc.comm.NXTCommException;
+
+public class Master extends JFrame implements ActionListener
+{
+	private IOThread t9;
+	private IOThread t6;
+	private IOThread t8;
+	private IOThread t10;
+	private IOThread t4;
+	private JComboBox robs;
+	private JComboBox commands;
+	private JButton send;
+	private JButton sendAll;
+	private Icon i9;
+	private Icon i6;
+	private Icon i8;
+	private Icon i10;
+	private Icon i4;
+	private File fShy = new File("shy.png"); // shy
+    private File fCur = new File("curious.jpg"); // curious
+	private File fAgg= new File("aggressive.jpg"); // aggressive
+	private File fNcon = new File("notConnected.jpg"); // not connected
+	private File fPaus = new File("pause.gif");// pause
+	private JFrame f;
+	private JPanel layout;
+	private JLabel label9;
+	private JLabel label8; 
+	private JLabel label6;
+	private JLabel label10;
+	private JLabel label4;
+	private JPanel stats;
+	private JLabel s9;
+	private JLabel s8;
+	private JLabel s10;
+	private JLabel s6;
+	private JLabel s4;
+	
+	
+    public static void main(String[] args) throws MalformedURLException, NXTCommException
+    {
+    	new Master();
+    }
+    
+    public Master()
+    {
+    	t9 =  new IOThread("Rob 9",this);
+    	t8 =  new IOThread("Rob 8",this);
+    	t6 =  new IOThread("Rob 6",this);
+    	t10 = new IOThread("Rob 10",this);
+    	t4 =  new IOThread("Rob 4",this);
+    	startGifPanel();
+    	startSettingPanel();
+    }
+    
+    public void startSettingPanel()
+    {
+    	JFrame frame = new JFrame("Action");
+    	JPanel panel = new JPanel(new FlowLayout());
+    	String[] array = new String[]{"Rob 9", "Rob 6", "Rob 8", "Rob 10", "Rob 4"};
+    	String[] arrayC	 = new String[]{"Shy", "Curious", "Aggressive", "StopAuto", "StartAuto", "Pause/Play", "KillROB"};
+    	robs = new JComboBox(array);
+    	commands = new JComboBox(arrayC);
+    	send = new JButton("Send");
+    	send.addActionListener(this);
+    	sendAll = new JButton("Send All");
+    	sendAll.addActionListener(this);
+    	panel.add(robs);
+    	panel.add(commands);
+    	panel.add(send);
+    	panel.add(sendAll);
+    	frame.getContentPane().add(panel);
+    	frame.pack();
+    	frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    	frame.setLocationRelativeTo(null);
+    	frame.setVisible(true);
+    	
+    }
+    
+    public void setGif(String name, int state)
+    {
+    	if(name.equals("Rob 9")){
+    		switch(state){
+    		case 1:i9 = new ImageIcon(fShy.getAbsolutePath());s9 = new JLabel ("Rob  9: is now shy "); break;
+    		case 2:i9 = new ImageIcon(fCur.getAbsolutePath());s9 = new JLabel ("Rob  9: is now curious "); break;
+    		case 3:i9 = new ImageIcon(fAgg.getAbsolutePath());s9 = new JLabel ("Rob  9: is now aggro :@ "); break;
+    		case 4:i9 = new ImageIcon(fPaus.getAbsolutePath());s9 = new JLabel ("Rob  9: is now paused "); break;
+    		default:i9 = new ImageIcon(fNcon.getAbsolutePath()); s9 = new JLabel ("Rob  9: is now disconnected ");
+    		
+    		}
+    		
+    	}
+    	else if(name.equals("Rob 8")){
+    		switch(state){
+    		case 1:i8 = new ImageIcon(fShy.getAbsolutePath());s9 = new JLabel ("Rob  9: is now shy "); break;
+    		case 2:i8 = new ImageIcon(fCur.getAbsolutePath());s9 = new JLabel ("Rob  9: is now curious "); break;
+    		case 3:i8 = new ImageIcon(fAgg.getAbsolutePath());s9 = new JLabel ("Rob  9: is now aggro :@ "); break;
+    		case 4:i8 = new ImageIcon(fPaus.getAbsolutePath());s9 = new JLabel ("Rob  9: is now paused "); break;
+    		default:i8 = new ImageIcon(fNcon.getAbsolutePath()) ; s9 = new JLabel ("Rob  9: is now disconnected ");
+    		}
+    		
+    	}
+    	else if(name.equals("Rob 6")){
+    		switch(state){
+    		case 1:i6 = new ImageIcon(fShy.getAbsolutePath());s9 = new JLabel ("Rob  9: No status update received "); break;
+    		case 2:i6 = new ImageIcon(fCur.getAbsolutePath());s9 = new JLabel ("Rob  9: No status update received "); break;
+    		case 3:i6 = new ImageIcon(fAgg.getAbsolutePath());s9 = new JLabel ("Rob  9: No status update received "); break;
+    		case 4:i6 = new ImageIcon(fPaus.getAbsolutePath());s9 = new JLabel ("Rob  9: No status update received "); break;
+    		default:i6 = new ImageIcon(fNcon.getAbsolutePath());s9 = new JLabel ("Rob  9: is now disconnected ");
+    		}
+    		
+    	}
+    	else if(name.equals("Rob 10")){
+    		switch(state){
+    		case 1:i10 = new ImageIcon(fShy.getAbsolutePath());s9 = new JLabel ("Rob  9: No status update received "); break;
+    		case 2:i10 = new ImageIcon(fCur.getAbsolutePath());s9 = new JLabel ("Rob  9: No status update received "); break;
+    		case 3:i10 = new ImageIcon(fAgg.getAbsolutePath());s9 = new JLabel ("Rob  9: No status update received "); break;
+    		case 4:i10 = new ImageIcon(fPaus.getAbsolutePath());s9 = new JLabel ("Rob  9: No status update received "); break;
+    		default:i10 = new ImageIcon(fNcon.getAbsolutePath()); s9 = new JLabel ("Rob  9: is now disconnected ");
+    		}
+    		
+    	}
+    	else if(name.equals("Rob 4")){
+    		switch(state){
+    		case 1:i4 = new ImageIcon(fShy.getAbsolutePath()); s9 = new JLabel ("Rob  9: No status update received "); break;
+    		case 2:i4 = new ImageIcon(fCur.getAbsolutePath()); s9 = new JLabel ("Rob  9: No status update received "); break;
+    		case 3:i4 = new ImageIcon(fAgg.getAbsolutePath()); s9 = new JLabel ("Rob  9: No status update received "); break;
+    		case 4:i4 = new ImageIcon(fPaus.getAbsolutePath()); s9 = new JLabel ("Rob  9: No status update received "); break;
+    		default:i4 = new ImageIcon(fNcon.getAbsolutePath()); s9 = new JLabel ("Rob  9: is now disconnected ");
+    		}
+    	}
+    	label9 = new JLabel(i9);
+    	label8 = new JLabel(i10);
+    	label6 = new JLabel(i4);
+    	label10 = new JLabel(i8);
+		label4 = new JLabel(i6);
+		Font title = new Font("Arial", Font.BOLD, 30);
+        TitledBorder b9 = new TitledBorder("Robot 9");
+        b9.setTitleFont(title);
+        b9.setTitleColor(Color.PINK);
+        label9.setBorder(b9);
+        TitledBorder b10 = new TitledBorder("Robot 10");
+        b10.setTitleFont(title);
+        b10.setTitleColor(Color.YELLOW);
+        label10.setBorder(b10);
+        TitledBorder b8 = new TitledBorder("Robot 8");
+        b8.setTitleFont(title);
+        b8.setTitleColor(Color.RED);
+        label8.setBorder(b8);
+        TitledBorder b6 = new TitledBorder("Robot 6");
+        b6.setTitleFont(title);
+        b6.setTitleColor(Color.GREEN);
+        label6.setBorder(b6);
+        TitledBorder b4 = new TitledBorder("Robot 4");
+        b4.setTitleFont(title);
+        b4.setTitleColor(Color.BLUE);
+        label4.setBorder(b4);
+    	
+    	f.getContentPane().removeAll();
+    	f.getContentPane().invalidate();
+    	layout.removeAll();
+    	layout.add(label4);
+        layout.add(label6);
+        layout.add(label8);
+        layout.add(label9);
+        layout.add(label10);
+        f.getContentPane().add(layout);
+        f.pack();
+    }
+
+    public void startGifPanel()
+    {
+    	i9 = new ImageIcon(fNcon.getAbsolutePath()); 
+    	i8 = new ImageIcon(fNcon.getAbsolutePath());
+    	i6 = new ImageIcon(fNcon.getAbsolutePath());  
+        i10 = new ImageIcon(fNcon.getAbsolutePath());  
+        i4 = new ImageIcon(fNcon.getAbsolutePath()); 
+
+        label9 = new JLabel(i9);
+        label8 = new JLabel(i8);
+        label6 = new JLabel(i6);
+        label10 = new JLabel(i10);
+        label4 = new JLabel(i4);
+        Font title = new Font("Arial", Font.BOLD, 30);
+        TitledBorder b9 = new TitledBorder("Robot 9");
+        b9.setTitleFont(title);
+        label9.setBorder(b9);
+        TitledBorder b10 = new TitledBorder("Robot 10");
+        b10.setTitleFont(title);
+        label10.setBorder(b10);
+        TitledBorder b8 = new TitledBorder("Robot 8");
+        b8.setTitleFont(title);
+        label8.setBorder(b8);
+        TitledBorder b6 = new TitledBorder("Robot 6");
+        b6.setTitleFont(title);
+        label6.setBorder(b6);
+        TitledBorder b4 = new TitledBorder("Robot 4");
+        b4.setTitleFont(title);
+        label4.setBorder(b4);
+        s9 = new JLabel ("Rob  9: No status update received ");
+        s10 = new JLabel("Rob 10: No status update received ");
+        s8 = new JLabel ("Rob  8: No status update received ");
+        s6 = new JLabel ("Rob  6: No status update received ");
+        s4 = new JLabel ("Rob  4: No status update received ");
+        s9.setFont(new Font("Arial", 0, 25));
+        s10.setFont(new Font("Arial", 0, 25));
+        s8.setFont(new Font("Arial", 0, 25));
+        s4.setFont(new Font("Arial", 0, 25));
+        s6.setFont(new Font("Arial", 0, 25));
+        stats = new JPanel();
+        TitledBorder statsBorder = new TitledBorder("Connection Status");
+        statsBorder.setTitleFont(title);
+        stats.setBorder(statsBorder);
+        stats.setLayout(new BoxLayout(stats, BoxLayout.Y_AXIS));
+        stats.add(Box.createVerticalStrut(80));
+        stats.add(s4);
+        stats.add(s6);
+        stats.add(s8);
+        stats.add(s9);
+        stats.add(s10);
+        f = new JFrame("Animation");
+        layout = new JPanel(new GridLayout(2, 3));
+        layout.add(label4);
+        layout.add(label6);
+        layout.add(label8);
+        layout.add(label9);
+        layout.add(label10);
+        layout.add(stats);
+        f.getContentPane().add(layout);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.pack();
+        f.setSize(Toolkit.getDefaultToolkit().getScreenSize());
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);    	
+    }
+    
+    public void setStats(String text, String rob)
+    {
+    	if(rob.equals("Rob 9"))
+    	{
+    		s9.setText(text);
+    	}
+    	else if(rob.equals("Rob 8"))
+    	{
+    		s8.setText(text);
+    	}
+    	else if(rob.equals("Rob 10"))
+    	{
+    		s10.setText(text);
+    	}
+    	else if(rob.equals("Rob 6"))
+    	{
+    		s6.setText(text);
+    	}
+    	else if(rob.equals("Rob 4"))
+    	{
+    		s4.setText(text);
+    	}
+    	else
+    	{
+    		System.err.println("The give Rob is not known (---setLabel()---)");
+    	}
+    	f.repaint();
+    }
+    
+	public void actionPerformed(ActionEvent e) 
+	{
+		int i = commands.getSelectedIndex();
+		i++;
+		if(e.getSource() == send)
+		{
+			if(robs.getSelectedItem().toString() == "Rob 9")
+			{
+					t9.send("Rob 9", i);
+					if(i == 7)
+					{
+						t9.setRun(false);
+						System.err.println("Rob 9 got killed x.X");
+					}
+			}
+			else if(robs.getSelectedItem().toString() == "Rob 8")
+			{
+					t8.send("Rob 8", i);
+
+			}
+			else if(robs.getSelectedItem().toString() == "Rob 6")
+			{
+					t6.send("Rob 6", i);
+				
+			}
+			else if(robs.getSelectedItem().toString() == "Rob 10")
+			{
+					t10.send("Rob 10", i);
+
+			}
+			else if(robs.getSelectedItem().toString() == "Rob 4")
+			{
+					t4.send("Rob 4", i);
+			}
+			else
+			{
+				System.out.println("Couldn't find that Rob :(");
+			}
+		}
+		else if(e.getSource() == sendAll)
+		{
+				t9.send("Rob 9", i);
+				t10.send("Rob 10", i);
+				t8.send("Rob 8", i);
+				t6.send("Rob 6", i);
+				t4.send("Rob 4", i);
+				if(i == 7)
+				{
+					t9.setRun(false);
+					t10.setRun(false);
+					t8.setRun(false);
+					t6.setRun(false);
+					t4.setRun(false);
+					System.err.println("All ROBS got killed x.X");
+				}
+			}
+		}
+		
+	}

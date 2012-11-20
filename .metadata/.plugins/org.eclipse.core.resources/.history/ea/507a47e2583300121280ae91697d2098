@@ -1,0 +1,15 @@
+import javax.swing.*;
+
+
+public class Notification extends JFrame
+{
+	public Notification()
+	{
+		this.setTitle("Notification Center");
+	}
+	
+	public void addMessage(String text)
+	{
+		
+	}
+}

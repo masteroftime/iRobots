@@ -1,0 +1,8 @@
+
+public class Robots 
+{
+	private String robName;
+	private String mac;
+	private int state;
+	
+}

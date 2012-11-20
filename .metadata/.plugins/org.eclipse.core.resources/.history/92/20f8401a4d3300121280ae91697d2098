@@ -1,0 +1,192 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.EOFException;
+import java.util.HashMap;
+
+import lejos.pc.comm.NXTCommBluecove;
+import lejos.pc.comm.NXTCommException;
+import lejos.pc.comm.NXTInfo;
+
+public class Bluetooth extends Thread
+{
+	private NXTInfo info;
+	private NXTCommBluecove con;
+	private DataInputStream input;
+	private DataOutputStream output;
+	private String mac;
+	private String robName;
+	private boolean run;
+	private Robot gandalf;
+	private Robot frodo;
+	private Robot aragon;
+	private Robot gimli;
+
+	
+	public Bluetooth(String robName, String mac)
+	{
+		setMac(mac);
+		setRobName(robName);
+		this.run = true;
+		start();
+	}
+	@Override
+	public void run()
+	{
+		while(run)
+		{
+			info = new NXTInfo();
+			info.deviceAddress = getMac();
+			info.name = getRobName();
+			con = new NXTCommBluecove();
+			try 
+			{
+				read();
+			} catch (NXTCommException e) 
+			{
+				new Notification(info.name + " could not be found :(");
+			}
+			try {
+				this.sleep(100);
+			} catch (InterruptedException e) {
+				new Notification(info.name + " is not reachable");
+				e.printStackTrace();
+				
+			}
+		}
+		new Notification("Suchlauf beendet");
+	}
+
+	public synchronized void send() 
+	{
+		
+	}
+
+	public void setRun(boolean run) 
+	{
+		this.run = run;
+	}
+	
+	public void connect() throws NXTCommException
+	{
+		try 
+		{
+			if(con.open(info))
+			{
+				new Notification("Successfull Connection with "+info.name+" :)");
+				con.close();
+			}
+			else
+			{
+				new Notification("No Connection established :(");
+			}			
+		} 
+		catch (NXTCommException | IOException e) 
+		{
+			new Notification(info.name + " is not reachable");
+			e.printStackTrace();
+		}
+		
+	}
+	public void read() throws NXTCommException
+	{
+		//info.deviceAddress = macs.get(name); //To get the current MAC
+		con.open(info); //establishing the connection
+		master.setStats("Verbindung mit " + names.get(info.deviceAddress) + " hergestellt", names.get(info.deviceAddress));
+		input = new DataInputStream(com.getInputStream()); //initializing DataInputStream
+		try
+		{
+			while(run)
+			{
+				int state = input.readInt();
+				switch(state)
+				{
+				case 1: //Shy
+					print(names.get(info.deviceAddress) + " is Shy");
+					master.setGif(this.name,1);
+					master.setStats(names.get(info.deviceAddress)+ " is Shy", names.get(info.deviceAddress));
+					break;
+				case 2: // Curious
+					print(names.get(info.deviceAddress) + " is Curious");
+					master.setGif(this.name,2);
+					master.setStats(names.get(info.deviceAddress)+ " is Curious", names.get(info.deviceAddress));
+
+					break;
+				case 3: //Aggressive
+					print(names.get(info.deviceAddress) + " is Aggressive");
+					master.setGif(this.name,3);
+					master.setStats(names.get(info.deviceAddress)+ " is Aggressive", names.get(info.deviceAddress));
+
+					break;
+				case 4:
+					print(names.get(info.deviceAddress) + " is paused");
+					master.setGif(this.name,4);
+					break;
+				default: // Actually 0
+					getState(0);
+					print("No Data transmitted :(" + state);
+				}
+			}
+		}
+		catch(EOFException e)
+		{
+			master.setStats("Slave " + names.get(info.deviceAddress) + " is disconnected", names.get(info.deviceAddress));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+	public String getMac() {
+		return mac;
+	}
+
+	public void setMac(String mac) {
+		this.mac = mac;
+	}
+
+	public String getRobName() {
+		return robName;
+	}
+
+	public void setRobName(String robName) {
+		this.robName = robName;
+	}
+
+	public boolean getRun() {
+		return run;
+	}
+	
+	
+	public Robot getGandalf() {
+		return gandalf;
+	}
+
+	public void setGandalf(Robot gandalf) {
+		this.gandalf = gandalf;
+	}
+
+	public Robot getFrodo() {
+		return frodo;
+	}
+
+	public void setFrodo(Robot frodo) {
+		this.frodo = frodo;
+	}
+
+	public Robot getAragon() {
+		return aragon;
+	}
+
+	public void setAragon(Robot aragon) {
+		this.aragon = aragon;
+	}
+
+	public Robot getGimli() {
+		return gimli;
+	}
+
+	public void setGimli(Robot gimli) {
+		this.gimli = gimli;
+	}
+}
