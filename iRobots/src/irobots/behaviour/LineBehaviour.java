@@ -5,6 +5,15 @@ import lejos.robotics.navigation.Navigator;
 import lejos.robotics.navigation.Pose;
 import lejos.robotics.subsumption.Behavior;
 
+/**
+ * This Behavior causes the robot not to cross the line which marks
+ * the field boundaries if it is detected. When the line is detected
+ * the robot will do a 180° turn and the pass control to subsequent
+ * behaviors.
+ * 
+ * @author Martin Feiler
+ *
+ */
 public class LineBehaviour implements Behavior {
 	
 	private Navigator nav;

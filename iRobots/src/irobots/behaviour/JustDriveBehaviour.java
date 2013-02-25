@@ -3,6 +3,15 @@ package irobots.behaviour;
 import lejos.robotics.navigation.Navigator;
 import lejos.robotics.subsumption.Behavior;
 
+/**
+ * This behavior will make the robot go forward if it is
+ * idle and no other behaviors take control over the robot.
+ * This behavior can be used to let the robot explore the
+ * field if no other action has to be done.
+ * 
+ * @author Martin Feiler
+ *
+ */
 public class JustDriveBehaviour implements Behavior {
 	
 	private Navigator nav;
@@ -21,10 +30,13 @@ public class JustDriveBehaviour implements Behavior {
 		return true;
 	}
 
+	/**
+	 * Causes the robot to go forward until another behavior takes over.
+	 */
 	@Override
 	public void action() {
 		nav.getMoveController().forward();
-		while(!suppressed);
+		//while(!suppressed); //not sure if needed
 	}
 
 	@Override
