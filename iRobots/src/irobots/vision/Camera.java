@@ -68,11 +68,12 @@ public class Camera {
 			return null;
 		
 		Rectangle[] objs = getObjects(colormap);
-		Rectangle obj = null;
+		Rectangle obj = n                                             ull;
+		Robot rob = null;
 		
 		if (objs.length == 1) {
-			Point p = objs[0].getLocation();
-			Dimenstion d = objs[0].getSize();
+			rob = new Robot();
+			rob.setPosition(new Point(
 		}
 		if (objs.length == 2) {
 		}
@@ -85,7 +86,7 @@ public class Camera {
 			obj = objs[0];
 		}
 		
-		return new Robot();
+		return rob;
 	}
 	
 	public Robot[] detectRobots() {
