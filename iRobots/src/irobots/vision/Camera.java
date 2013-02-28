@@ -40,7 +40,12 @@ public class Camera {
 				objs.add(cam.getRectangle(i));
 			}
 		}
-		return (Rectangle[]) objs.toArray();
+		
+		Rectangle[] ret = new Rectangle[objs.size()];
+		for(int i = 0; i < ret.length; i++) {
+			ret[i] = objs.get(i);
+		}
+		return ret;
 	}
 	
 	/**
