@@ -3,6 +3,7 @@ package irobots.vision;
 import irobots.comm.Robot;
 
 import java.awt.Rectangle;
+import java.awt.Point;
 import java.util.ArrayList;
 
 import lejos.nxt.SensorPort;
@@ -64,7 +65,16 @@ public class Camera {
 		Rectangle[] objs = getObjects(colormap);
 		Rectangle obj = null;
 		
-		if (objs.length > 1) {
+		if (objs.length == 1) {
+			Point p = objs[0].getLocation();
+			Dimenstion d = objs[0].getSize();
+		}
+		if (objs.length == 2) {
+		}
+		if (objs.length == 3) {
+		}
+		if (objs.length == 4) {
+		}
 			
 		} else {
 			obj = objs[0];
