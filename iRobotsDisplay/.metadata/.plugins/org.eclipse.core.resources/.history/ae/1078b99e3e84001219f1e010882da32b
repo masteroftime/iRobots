@@ -1,0 +1,15 @@
+import javax.swing.JFrame;
+import javax.swing.UIManager;
+
+
+public class Display extends JFrame
+{
+
+	public Display()
+	{
+		super("iRobots - Display");
+		UIManager.setLookAndFeel(UIManager.getLookAndFeel());
+		this.setVisible(true);
+	}
+
+}

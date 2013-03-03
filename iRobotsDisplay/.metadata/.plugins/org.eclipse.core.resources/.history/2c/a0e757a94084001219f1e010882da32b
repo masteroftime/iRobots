@@ -1,0 +1,15 @@
+import javax.swing.JPanel;
+
+
+public class Field extends JPanel
+{
+	public Field()
+	{
+		
+	}
+	
+	@Override
+	public void paintComponent( Graphics g ) {
+        super.paintComponent(g);
+	}
+}
