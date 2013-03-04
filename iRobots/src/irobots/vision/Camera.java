@@ -74,7 +74,8 @@ public class Camera {
 		
 		if (objs.length == 1) {
 			rob = new Robot();
-			rob.setPosition(new Point(
+			rob.setPosition(pointAt(getObjectDistance(objs[0], 10.0, 4.7);
+			rob.setHeading(Robot.me.getHeading()+getObjectAngle(objs[0]);
 		}
 		if (objs.length == 2) {
 		}
