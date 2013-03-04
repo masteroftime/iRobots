@@ -1,8 +1,5 @@
 package irobots.comm;
 
-import java.awt.Point;
-import java.io.Serializable;
-
 import lejos.robotics.navigation.Pose;
 
 /**
@@ -11,7 +8,6 @@ import lejos.robotics.navigation.Pose;
  * @author martin
  *
  */
-@SuppressWarnings("serial")
 public class Robot extends Pose
 {
 	public static Robot me = null;
@@ -20,6 +16,14 @@ public class Robot extends Pose
 	
 	private transient boolean xAbsolute;
 	private transient boolean yAbsolute;
+	
+	public Robot() {
+		super();
+	}
+	
+	public Robot(float x, float y, float heading) {
+		super(x, y, heading);
+	}
 	
 	public void setFixedX(float x) {
 		_location.x = x;
@@ -43,5 +47,9 @@ public class Robot extends Pose
 	
 	public void setPositionAbsolute(boolean positionAbsolute) {
 		this.positionAbsolute = positionAbsolute;
+	}
+	
+	public static Robot fromPose(Pose p) {
+		return new Robot(p.getX(), p.getY(), p.getHeading());
 	}
 }

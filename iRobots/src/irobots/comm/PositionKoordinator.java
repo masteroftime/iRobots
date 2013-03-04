@@ -1,7 +1,5 @@
 package irobots.comm;
 
-import java.awt.Point;
-
 import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Pose;
 import irobots.Global;
@@ -15,16 +13,23 @@ public class PositionKoordinator extends Thread
 		pose = Global.navigator.getPoseProvider();
 		
 		pose.setPose(new Pose(0, 0, angle));
-		Robot.me = new Robot();
-		Robot.me.setPosition(new Point(0, 0));
-		Robot.me.setHeading(angle);
+		Robot.me = Robot.fromPose(pose.getPose());
+		
+		this.setDaemon(true);
+		this.start();
 	}
 	
 	@Override
 	public void run() {
-		Pose p = pose.getPose();
-		
-		Robot.me.setPosition(p.getLocation());
-		Robot.me.setHeading(p.getHeading());
+		while(true) {
+			float angle = Global.compass.getDegrees();
+			
+			Pose p = pose.getPose();
+			p.setHeading(angle);
+			
+			Robot.me = Robot.fromPose(p);
+			
+			Thread.yield();
+		}
 	}
 }
