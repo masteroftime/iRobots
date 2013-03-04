@@ -1,5 +1,6 @@
 package irobots.behaviour;
 
+import irobots.Global;
 import lejos.robotics.navigation.Navigator;
 import lejos.robotics.subsumption.Behavior;
 
@@ -17,8 +18,8 @@ public class JustDriveBehaviour implements Behavior {
 	private Navigator nav;
 	private volatile boolean suppressed;
 	
-	public JustDriveBehaviour(Navigator nav) {
-		this.nav = nav;
+	public JustDriveBehaviour() {
+		this.nav = Global.navigator;
 	}
 
 	/**

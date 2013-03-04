@@ -2,6 +2,7 @@ package irobots.behaviour;
 
 import java.awt.Rectangle;
 
+import irobots.Global;
 import irobots.vision.Camera;
 import lejos.robotics.navigation.Navigator;
 import lejos.robotics.subsumption.Behavior;
@@ -20,9 +21,9 @@ public class FollowBehaviour implements Behavior {
 	private Navigator nav;
 	private Camera cam;
 	
-	public FollowBehaviour(Navigator nav, Camera cam) {
-		this.nav = nav;
-		this.cam = cam;
+	public FollowBehaviour() {
+		this.nav = Global.navigator;
+		this.cam = Global.camera;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package irobots.behaviour;
 
+import irobots.Global;
 import irobots.vision.ColorSensor;
 import lejos.robotics.navigation.Navigator;
 import lejos.robotics.navigation.Pose;
@@ -19,9 +20,9 @@ public class LineBehaviour implements Behavior {
 	private Navigator nav;
 	private ColorSensor color;
 	
-	public LineBehaviour(Navigator nav, ColorSensor color) {
-		this.nav = nav;
-		this.color = color;
+	public LineBehaviour() {
+		this.nav = Global.navigator;
+		this.color = Global.color;
 	}
 
 	@Override
