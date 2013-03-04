@@ -5,6 +5,7 @@ import java.awt.Rectangle;
 import irobots.Global;
 import irobots.comm.Robot;
 import irobots.vision.Camera;
+import lejos.nxt.Button;
 import lejos.robotics.navigation.Navigator;
 import lejos.robotics.navigation.Waypoint;
 import lejos.robotics.subsumption.Behavior;
@@ -34,6 +35,7 @@ public class FollowBehaviour implements Behavior {
 	@Override
 	public void action() {
 		suppressed = false;
+		System.out.println("Following");
 		
 		while(!suppressed && (nav.isMoving() || cam.robotDetected())) {
 			Robot[] robs = cam.detectRobots();
@@ -44,12 +46,18 @@ public class FollowBehaviour implements Behavior {
 			
 			Robot r = robs[0];
 			
+			try {
 			if(robs.length > 1) {
 				for(int i = 1; i < robs.length; i++) {
 					if (Robot.me.distanceTo(robs[i].getLocation()) < Robot.me.distanceTo(r.getLocation())) {
 						r = robs[i];
 					}
 				}
+			}
+			} catch (NullPointerException e) {
+				for(Robot rb : robs) {System.out.println(rb); }
+				while(!Button.ESCAPE.isDown());
+				System.exit(1);
 			}
 			
 			nav.clearPath();

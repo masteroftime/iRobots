@@ -39,6 +39,7 @@ public class LineBehaviour implements Behavior {
 	 */
 	@Override
 	public void action() {
+		System.out.println("At the line");
 		Robot.me =  Robot.meFromPose(nav.getPoseProvider().getPose());
 		
 		float deg = Global.compass.getDegrees();
@@ -62,6 +63,7 @@ public class LineBehaviour implements Behavior {
 		p.rotateUpdate(180);
 		nav.clearPath();
 		nav.goTo(p.getX(), p.getY(), p.getHeading());
+		nav.waitForStop();
 	}
 
 	/**

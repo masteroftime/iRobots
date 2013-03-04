@@ -14,17 +14,20 @@ public class ColorSensor {
 	
 	private lejos.nxt.ColorSensor sensor;
 	
+	public static final int BLACK = 7;
+	public static final int WHITE = 6;
+	
 	public ColorSensor() {
 		sensor = new lejos.nxt.ColorSensor(SensorPort.S1);
 	}
 	
 	public boolean lineDetected() {
-		return sensor.getColorID() == SensorConstants.BLACK;
+		return sensor.getColorID() == BLACK;
 	}
 	
 	public boolean chipDetected() {
-		return sensor.getColorID() != SensorConstants.BLACK 
-				&& sensor.getColorID() != SensorConstants.WHITE;
+		return sensor.getColorID() != BLACK 
+				&& sensor.getColorID() != WHITE;
 	}
 	
 	public int getChipColor() {

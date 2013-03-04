@@ -82,6 +82,11 @@ public class Camera {
 			return null;
 
 		Rectangle[] objs = getObjects(colormap);
+		
+		if(objs.length == 0) {
+			return null;
+		}
+		
 		Rectangle obj = objs[0];
 		Robot rob = null;
 		
@@ -115,7 +120,10 @@ public class Camera {
 		c = 0;
 		
 		for(Robot rob : r) {
-			if(rob != null) robs[c] = rob;
+			if(rob != null) {
+				robs[c] = rob;
+				c++;
+			}
 		}
 		
 		return robs;

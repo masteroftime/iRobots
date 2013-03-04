@@ -1,5 +1,7 @@
 package irobots;
 
+import irobots.behaviour.ExitProgramBehavior;
+import irobots.behaviour.FollowBehaviour;
 import irobots.behaviour.JustDriveBehaviour;
 import irobots.behaviour.LineBehaviour;
 import irobots.vision.ColorSensor;
@@ -17,6 +19,7 @@ public class GooseWalk implements Runnable {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		Global.initGlobals();
 		new GooseWalk().run();
 	}
 	
@@ -27,7 +30,7 @@ public class GooseWalk implements Runnable {
 
 	@Override
 	public void run() {
-		Arbitrator a = new Arbitrator(new Behavior[] {new JustDriveBehaviour(), new LineBehaviour()});
+		Arbitrator a = new Arbitrator(new Behavior[] {new JustDriveBehaviour(), new FollowBehaviour(), new LineBehaviour(), new ExitProgramBehavior()});
 		a.start();
 	}
 

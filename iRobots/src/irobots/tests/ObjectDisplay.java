@@ -1,4 +1,4 @@
-package irobots;
+package irobots.tests;
 
 import java.awt.Rectangle;
 

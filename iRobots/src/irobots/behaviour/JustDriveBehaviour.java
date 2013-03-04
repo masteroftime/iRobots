@@ -36,6 +36,7 @@ public class JustDriveBehaviour implements Behavior {
 	 */
 	@Override
 	public void action() {
+		System.out.println("Just Driving");
 		nav.getMoveController().forward();
 		//while(!suppressed); //not sure if needed
 	}

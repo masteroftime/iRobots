@@ -1,4 +1,4 @@
-package irobots;
+package irobots.tests;
 
 import lejos.nxt.Button;
 import lejos.nxt.SensorPort;

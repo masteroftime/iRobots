@@ -13,6 +13,7 @@ public class PositionKoordinator extends Thread
 		pose = Global.navigator.getPoseProvider();
 		
 		pose.setPose(new Pose(0, 0, angle));
+		Robot.me = new Robot();
 		Robot.me = Robot.meFromPose(pose.getPose());
 		
 		this.setDaemon(true);

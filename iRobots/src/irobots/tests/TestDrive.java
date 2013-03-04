@@ -1,4 +1,4 @@
-package irobots;
+package irobots.tests;
 
 import lejos.nxt.Motor;
 import lejos.robotics.navigation.DifferentialPilot;
