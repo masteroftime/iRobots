@@ -34,10 +34,12 @@ public class ObjectDisplay
 			g.clear();
 			
 			for(Rectangle o : objs) {
-				g.drawRect(conv(o.x), conv(o.y), conv(o.width), conv(o.height));
+				g.drawRect(convX(o.x), convY(o.y), convX(o.width), convY(o.height));
+				//g.drawRect(o.x, o.y, o.width, o.height);
 			}
 			
 			g.drawString(""+colormap, 49, 63, Graphics.BOTTOM | Graphics.HCENTER);
+			g.drawString(objs.length + "/" + cam.getCamera().getNumberOfObjects(), 90, 63, Graphics.BOTTOM | Graphics.RIGHT);
 			
 			try {
 				Thread.sleep(50);
@@ -47,7 +49,11 @@ public class ObjectDisplay
 		}
 	}
 	
-	public static int conv(int x) {
-		return (int) (x/144.0)*100;
+	public static int convX(double x) {
+		return (int) ((x/144.0)*100);
+	}
+	
+	public static int convY(double y) {
+		return (int) ((y/88.0)*63);
 	}
 }
