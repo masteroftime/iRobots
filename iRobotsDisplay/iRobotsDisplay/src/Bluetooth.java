@@ -8,14 +8,14 @@ import lejos.pc.comm.NXTCommBluecove;
 import lejos.pc.comm.NXTCommException;
 import lejos.pc.comm.NXTInfo;
 
-public class Bluetooth extends Thread
+public class Bluetooth
 {
 	private NXTInfo info;
 	private NXTCommBluecove con;
 	private DataInputStream input;
 	private DataOutputStream output;
-	private String mac;
-	private String robName;
+	private String mac = "0016530AD64A";
+	private String robName = "NAPOLEON";
 	private boolean run;
 	
 	public Bluetooth(String robName, String mac)
