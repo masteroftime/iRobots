@@ -83,20 +83,10 @@ public class Camera {
 
 		Rectangle[] objs = getObjects(colormap);
 		Rectangle obj = null;
-		Robot rob = null;
-
-		if (objs.length == 1) {
-			rob = new Robot();
-			rob.setLocation(rob.pointAt((float)getObjectDistance(objs[0], 10.0, 4.7), (float)getObjectAngle(objs[0])));
-			rob.setHeading((float)(Robot.me.getHeading()+getObjectAngle(objs[0])));
-		}
-		if (objs.length == 2) {
-		}
-		if (objs.length == 3) {
-		}
-		if (objs.length == 4) {
-		}
-
+	    
+		rob = new Robot();
+		rob.setLocation(rob.pointAt((float)getObjectDistance(objs[0], 10.0, 4.7), (float)getObjectAngle(objs[0])));
+		rob.setHeading((float)(Robot.me.getHeading()+getObjectAngle(objs[0])));
 		return rob;
 	}
 	
