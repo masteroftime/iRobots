@@ -25,6 +25,7 @@ public class Camera {
 	
 	public Camera() {
 		cam = new NXTCam(SensorPort.S3);
+		cam.enableTracking(true);
 	}
 	
 	/**
@@ -87,6 +88,10 @@ public class Camera {
 		}
 		
 		return rob;
+	}
+	
+	public NXTCam getCamera() {
+		return cam;
 	}
 	
 	public Robot[] detectRobots() {
