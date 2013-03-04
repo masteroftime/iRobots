@@ -3,8 +3,10 @@ package irobots.behaviour;
 import java.awt.Rectangle;
 
 import irobots.Global;
+import irobots.comm.Robot;
 import irobots.vision.Camera;
 import lejos.robotics.navigation.Navigator;
+import lejos.robotics.navigation.Waypoint;
 import lejos.robotics.subsumption.Behavior;
 
 /**
@@ -15,9 +17,6 @@ import lejos.robotics.subsumption.Behavior;
  *
  */
 public class FollowBehaviour implements Behavior {
-	
-	public final int ROBOT_COLORMAP = 0;
-	
 	private Navigator nav;
 	private Camera cam;
 	
@@ -28,18 +27,29 @@ public class FollowBehaviour implements Behavior {
 
 	@Override
 	public boolean takeControl() {
-		return cam.objectDetected(ROBOT_COLORMAP);
+		return cam.robotDetected();
 	}
 
 	@Override
 	public void action() {
-		Rectangle[] objs = cam.getObjects(ROBOT_COLORMAP);
+		Robot[] robs = cam.detectRobots();
 		
-		if(objs.length == 0) {
+		if(robs.length == 0) {
 			return;
 		}
 		
+		Robot r = robs[0];
 		
+		if(robs.length > 1) {
+			for(int i = 1; i < robs.length; i++) {
+				if (Robot.me.distanceTo(robs[i].getLocation()) < Robot.me.distanceTo(r.getLocation())) {
+					r = robs[i];
+				}
+			}
+		}
+		
+		nav.clearPath();
+		nav.goTo(new Waypoint(r.pointAt(5, r.getHeading()+180)));
 	}
 
 	@Override

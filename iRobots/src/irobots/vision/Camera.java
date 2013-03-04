@@ -64,18 +64,31 @@ public class Camera {
 		return false;
 	}
 	
+	public boolean robotDetected() {
+		int n = cam.getNumberOfObjects();
+		for(int i = 0; i < n; i++) {
+			switch(cam.getObjectColor(i)) {
+			case 0:
+			case 1:
+			case 2:
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public Robot detectRobot(int colormap) {
 		if(!objectDetected(colormap))
 			return null;
-		
+
 		Rectangle[] objs = getObjects(colormap);
-		Rectangle obj = n                                             ull;
+		Rectangle obj = null;
 		Robot rob = null;
-		
+
 		if (objs.length == 1) {
 			rob = new Robot();
-			rob.setPosition(pointAt(getObjectDistance(objs[0], 10.0, 4.7);
-			rob.setHeading(Robot.me.getHeading()+getObjectAngle(objs[0]);
+			rob.setLocation(rob.pointAt((float)getObjectDistance(objs[0], 10.0, 4.7), (float)getObjectAngle(objs[0])));
+			rob.setHeading((float)(Robot.me.getHeading()+getObjectAngle(objs[0])));
 		}
 		if (objs.length == 2) {
 		}
@@ -83,11 +96,7 @@ public class Camera {
 		}
 		if (objs.length == 4) {
 		}
-			
-		} else {
-			obj = objs[0];
-		}
-		
+
 		return rob;
 	}
 	
