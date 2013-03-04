@@ -1,0 +1,12 @@
+import javax.swing.JFrame;
+
+
+public class Display extends JFrame
+{
+
+	public Display()
+	{
+		this.super("iRobots - Display");
+	}
+
+}
