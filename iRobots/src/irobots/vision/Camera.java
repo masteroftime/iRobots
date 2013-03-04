@@ -82,11 +82,16 @@ public class Camera {
 			return null;
 
 		Rectangle[] objs = getObjects(colormap);
-		Rectangle obj = null;
-	    
+		Rectangle obj = objs[0];
+		Robot rob = null;
+		
+		if(objs.length > 1) {
+			obj = mergeObjects(objs);
+		}
+
 		rob = new Robot();
-		rob.setLocation(rob.pointAt((float)getObjectDistance(objs[0], 10.0, 4.7), (float)getObjectAngle(objs[0])));
-		rob.setHeading((float)(Robot.me.getHeading()+getObjectAngle(objs[0])));
+		rob.setLocation(rob.pointAt((float)getObjectDistance(obj, 10.0, 4.7), (float)getObjectAngle(objs[0])));
+		rob.setHeading((float)(Robot.me.getHeading()+getObjectAngle(obj)));
 		return rob;
 	}
 	
@@ -95,7 +100,25 @@ public class Camera {
 	}
 	
 	public Robot[] detectRobots() {
-		return null;
+		Robot[] r = new Robot[3];
+		r[0] = detectRobot(0);
+		r[1] = detectRobot(1);
+		r[2] = detectRobot(2);
+		
+		int c = 0;
+		
+		for(Robot rob : r) {
+			if(rob != null) c++;
+		}
+		
+		Robot[] robs = new Robot[c];
+		c = 0;
+		
+		for(Robot rob : r) {
+			if(rob != null) robs[c] = rob;
+		}
+		
+		return robs;
 	}
 	
 	/**
@@ -140,5 +163,19 @@ public class Camera {
 		}
 		
 		return (rsize * res) / (psize * 2 * Math.tan(VIEW_ANGLE / 2));
+	}
+	
+	public static Rectangle mergeObjects(Rectangle[] objs) {
+		Rectangle r = objs[0];
+		float size = r.height * r.width;
+		
+		for(int i = 1; i < objs.length; i++) {
+			if(objs[i].height * objs[i].width > size) {
+				r = objs[i];
+				size = r.height * r.width;
+			}
+		}
+		
+		return r;
 	}
 }

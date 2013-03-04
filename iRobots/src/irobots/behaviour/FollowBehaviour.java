@@ -19,6 +19,7 @@ import lejos.robotics.subsumption.Behavior;
 public class FollowBehaviour implements Behavior {
 	private Navigator nav;
 	private Camera cam;
+	private volatile boolean suppressed = false;
 	
 	public FollowBehaviour() {
 		this.nav = Global.navigator;
@@ -32,29 +33,33 @@ public class FollowBehaviour implements Behavior {
 
 	@Override
 	public void action() {
-		Robot[] robs = cam.detectRobots();
+		suppressed = false;
 		
-		if(robs.length == 0) {
-			return;
-		}
-		
-		Robot r = robs[0];
-		
-		if(robs.length > 1) {
-			for(int i = 1; i < robs.length; i++) {
-				if (Robot.me.distanceTo(robs[i].getLocation()) < Robot.me.distanceTo(r.getLocation())) {
-					r = robs[i];
+		while(!suppressed && (nav.isMoving() || cam.robotDetected())) {
+			Robot[] robs = cam.detectRobots();
+			
+			if(robs.length == 0) {
+				continue;
+			}
+			
+			Robot r = robs[0];
+			
+			if(robs.length > 1) {
+				for(int i = 1; i < robs.length; i++) {
+					if (Robot.me.distanceTo(robs[i].getLocation()) < Robot.me.distanceTo(r.getLocation())) {
+						r = robs[i];
+					}
 				}
 			}
+			
+			nav.clearPath();
+			nav.goTo(new Waypoint(r.pointAt(5, r.getHeading()+180)));
 		}
-		
-		nav.clearPath();
-		nav.goTo(new Waypoint(r.pointAt(5, r.getHeading()+180)));
 	}
 
 	@Override
 	public void suppress() {
-		
+		suppressed = true;
 	}
 	
 }

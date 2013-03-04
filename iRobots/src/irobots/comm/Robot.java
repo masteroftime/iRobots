@@ -49,7 +49,11 @@ public class Robot extends Pose
 		this.positionAbsolute = positionAbsolute;
 	}
 	
-	public static Robot fromPose(Pose p) {
-		return new Robot(p.getX(), p.getY(), p.getHeading());
+	public static Robot meFromPose(Pose p) {
+		Robot r = new Robot(p.getX(), p.getY(), p.getHeading());
+		r.positionAbsolute = me.positionAbsolute;
+		r.xAbsolute = me.xAbsolute;
+		r.yAbsolute = me.yAbsolute;
+		return r;
 	}
 }
