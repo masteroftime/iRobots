@@ -8,7 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import irobots.comm.PositionKoordinator;
+import irobots.comm.PositionCoordinator;
 import irobots.comm.Robot;
 import irobots.vision.Camera;
 import irobots.vision.ColorSensor;
@@ -27,7 +27,7 @@ public class Global
 	public static ColorSensor color;
 	public static CompassHTSensor compass;
 	public static Robot[] robots;
-	public static PositionKoordinator posKoord;
+	public static PositionCoordinator posKoord;
 	
 	public static int id;
 	
@@ -37,7 +37,7 @@ public class Global
 		navigator = new Navigator(new DifferentialPilot(4.3, 10.15, Motor.B, Motor.C));
 		color = new ColorSensor();
 		compass = new CompassHTSensor(SensorPort.S3);
-		posKoord = new PositionKoordinator();
+		posKoord = new PositionCoordinator();
 		
 		File f = new File("robId.bin");
 		if(f.exists()) {

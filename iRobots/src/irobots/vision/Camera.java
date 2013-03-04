@@ -6,6 +6,8 @@ import java.awt.Rectangle;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import javax.microedition.lcdui.Graphics;
+
 import lejos.nxt.SensorPort;
 import lejos.nxt.addon.NXTCam;
 
@@ -24,7 +26,7 @@ public class Camera {
 	public static final int SIZE_Y = 88;
 	
 	public Camera() {
-		cam = new NXTCam(SensorPort.S3);
+		cam = new NXTCam(SensorPort.S2);
 		cam.enableTracking(true);
 	}
 	
@@ -87,6 +89,16 @@ public class Camera {
 			return null;
 		}
 		
+		Graphics g = new Graphics();
+		g.clear();
+		
+		for(Rectangle o : objs) {
+			g.drawRect(camToScreenX(o.x), camToScreenY(o.y), camToScreenX(o.width), camToScreenY(o.height));
+			//g.drawRect(o.x, o.y, o.width, o.height);
+		}
+		
+		g.drawString(""+colormap, 49, 63, Graphics.BOTTOM | Graphics.HCENTER);
+		
 		Rectangle obj = objs[0];
 		Robot rob = null;
 		
@@ -102,6 +114,36 @@ public class Camera {
 	
 	public NXTCam getCamera() {
 		return cam;
+	}
+	
+	public Rectangle getRobotRectangle(int colormap) {
+		Rectangle[] objs = getObjects(colormap);
+		
+		if (objs.length == 0)
+			return null;
+		
+		if (objs.length == 1)
+			return objs[0];
+		
+		return mergeObjects(objs);
+	}
+	
+	public Rectangle getNearestRobotRectangle() {
+		Rectangle[] robs = new Rectangle[3];
+		robs[0] = getRobotRectangle(0);
+		robs[1] = getRobotRectangle(1);
+		robs[2] = getRobotRectangle(2);
+		double distance = Float.MAX_VALUE;
+		Rectangle ret = null;
+		
+		for(Rectangle r : robs) {
+			if(r != null && getObjectDistance(r, 10, 5) < distance) {
+				ret = r;
+				distance = getObjectDistance(r, 10, 5);
+			}
+		}
+		
+		return ret;
 	}
 	
 	public Robot[] detectRobots() {
@@ -185,5 +227,13 @@ public class Camera {
 		}
 		
 		return r;
+	}
+	
+	public static int camToScreenX(double x) {
+		return (int) ((x/144.0)*100);
+	}
+	
+	public static int camToScreenY(double y) {
+		return (int) ((y/88.0)*63);
 	}
 }

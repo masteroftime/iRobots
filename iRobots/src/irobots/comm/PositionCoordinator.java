@@ -4,11 +4,11 @@ import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Pose;
 import irobots.Global;
 
-public class PositionKoordinator extends Thread
+public class PositionCoordinator extends Thread
 {
 	private PoseProvider pose;
 	
-	public PositionKoordinator() {
+	public PositionCoordinator() {
 		float angle = Global.compass.getDegrees();
 		pose = Global.navigator.getPoseProvider();
 		

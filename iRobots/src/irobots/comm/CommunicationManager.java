@@ -26,12 +26,15 @@ public class CommunicationManager extends Thread
 		
 		out = new DataOutputStream(bee.getOutputStream());
 		in = new DataInputStream(bee.getInputStream());
-		connected = new ArrayList<>(4);
+		connected = new ArrayList<Integer>(4);
 	}
 	
 	public synchronized void sendMessage(String message, boolean ack) {
 		try {
 			out.writeUTF(message);
+			out.flush();
+			
+			System.out.println(message);
 			
 			if(ack) {
 				waitForAck();
