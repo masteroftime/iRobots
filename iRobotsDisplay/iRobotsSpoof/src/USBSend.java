@@ -7,7 +7,7 @@ import lejos.nxt.comm.*;
  * Test of Java streams over USB.
  * Run the PC example, USBSend, to send data.
  * 
- * @author Lawrie Griffiths
+ * @author der Hickl
  *
  */
 public class USBSend 

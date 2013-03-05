@@ -11,11 +11,13 @@ public class USBReceive
 	private DataInputStream inDat;
 	private DataOutputStream outDat;
 	private Field field;
+	private int count;
 	
 	public USBReceive(Field field)
 	{
 		conn = new NXTConnector();
 		this.field = field;
+		count = 0;
 	}
 	
 	public void receive() throws IOException
@@ -58,8 +60,8 @@ public class USBReceive
 					default: type = "undef"; id = split1[0];
 				}
 				field.addMessage(new Message(id, type, x, y, angle));
-				
-		        System.out.println(" Received " + s);
+				count++;
+		        System.out.println(" Received " + s + " Count: " + count );
 			}
 		}
 	}

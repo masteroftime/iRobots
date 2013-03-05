@@ -37,18 +37,25 @@ public class Main
     	in = new DataInputStream(xbee.getInputStream());
     	while(!Button.ESCAPE.isDown())
     	{
-    		System.out.println("Was here!");
-    		String msg = in.readUTF();
-    		System.out.println("got message");
+    		String msg = "";
+    		int b;
+    		//System.out.println("Was here!");
+    		//String msg = in.readUTF();
+    		while((b = in.read()) != -1)
+    		{
+    			msg += (char)b;
+    			if(msg.charAt(msg.length()-1) == '$') break;
+    		}
+    		//System.out.println("got message");
 			if(checkChecksum(msg) == true)
 			{
-				System.out.println("sending message");
+				//System.out.println("sending message");
 				usb.sendData(msg);
-				System.out.println("sent message");
+				//System.out.println("sent message");
 			}
 			else
 			{
-				System.out.println("CS Error");
+				System.out.println("CS Error - No Problem");
 				while(in.available() > 0)
 					in.read();
 			}
@@ -57,14 +64,20 @@ public class Main
     
     public boolean checkChecksum(String data)
     {
-    	int m = data.indexOf("@");
-        String checkSum = data.substring(m+1);
-        int checkBody = data.substring(0,m).hashCode();
-        String checkString = ""+checkBody;
-        if(checkSum.equals(checkString))
-        {  	
-        	return true;
-        }
+    	if(data != null)
+    	{
+	    	int m = data.indexOf("@");
+	    	if(m != -1)
+	    	{
+		        String checkSum = data.substring(m+1,data.length()-1);
+		        int checkBody = data.substring(0,m).hashCode();
+		        String checkString = ""+checkBody;
+		        if(checkSum.equals(checkString))
+		        {  	
+		        	return true;
+		        } 
+	    	}
+    	}
     	return false;
     }
     
