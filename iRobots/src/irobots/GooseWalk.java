@@ -30,8 +30,8 @@ public class GooseWalk implements Runnable {
 
 	@Override
 	public void run() {
-		//Arbitrator a = new Arbitrator(new Behavior[] {new JustDriveBehaviour(), new FollowBehaviour(), new LineBehaviour(), new ExitProgramBehavior()});
-		Arbitrator a = new Arbitrator(new Behavior[] {new FollowBehaviour(), new ExitProgramBehavior()});
+		Arbitrator a = new Arbitrator(new Behavior[] {new JustDriveBehaviour(), new FollowBehaviour(), new LineBehaviour(), new ExitProgramBehavior()});
+		//Arbitrator a = new Arbitrator(new Behavior[] {new FollowBehaviour(), new ExitProgramBehavior()});
 		a.start();
 	}
 

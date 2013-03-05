@@ -42,23 +42,42 @@ public class LineBehaviour implements Behavior {
 	 */
 	@Override
 	public void action() {
-		new Graphics().fillRect(0, 0, 100, 63);
+		Graphics g = new Graphics();
+		g.fillRect(0, 0, 100, 63);
+		g.setColor(1);
 		Robot.me =  Robot.meFromPose(nav.getPoseProvider().getPose());
 		
 		float deg = Global.compass.getDegrees();
 		
-		if(315 < deg || deg < 45) {
-			Robot.me.setFixedY(FIELD_HEIGHT);
-		}
-		else if(225 < deg) {
-			Robot.me.setFixedX(FIELD_WIDTH);
-		}
-		else if(135 < deg) {
-			Robot.me.setFixedY(0);
-		}
-		else {
+		if(Robot.me.getX() < 0) {
 			Robot.me.setFixedX(0);
 		}
+		if(Robot.me.getY() < 0) {
+			Robot.me.setFixedY(0);
+		}
+		if(Robot.me.getX() > 75) {
+			Robot.me.setFixedX(75);
+		}
+		if(Robot.me.getY() < 75) {
+			Robot.me.setFixedY(75);
+		}
+		
+		/*if(315 < deg || deg < 45) {
+			g.drawString("North", 50, 30, Graphics.HCENTER | Graphics.VCENTER);
+			Robot.me.setFixedX(FIELD_HEIGHT);
+		}
+		else if(225 < deg) {
+			g.drawString("West", 50, 30, Graphics.HCENTER | Graphics.VCENTER);
+			Robot.me.setFixedY(FIELD_WIDTH);
+		}
+		else if(135 < deg) {
+			g.drawString("South", 50, 30, Graphics.HCENTER | Graphics.VCENTER);
+			Robot.me.setFixedX(0);
+		}
+		else {
+			g.drawString("East", 50, 30, Graphics.HCENTER | Graphics.VCENTER);
+			Robot.me.setFixedY(0);
+		}*/
 		
 		nav.getPoseProvider().setPose(Robot.me);
 		

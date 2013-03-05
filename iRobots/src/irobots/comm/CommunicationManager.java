@@ -29,8 +29,8 @@ public class CommunicationManager extends Thread
 		in = new DataInputStream(bee.getInputStream());
 		connected = new ArrayList<Integer>(4);
 		
-		//this.setDaemon(true);
-		//this.start();
+		this.setDaemon(true);
+		this.start();
 	}
 	
 	@Override
@@ -42,7 +42,8 @@ public class CommunicationManager extends Thread
 
 	public synchronized void sendMessage(String message) {
 		try {
-			out.writeUTF(message+"@"+message.hashCode());
+			byte[] msg = (message+"@"+message.hashCode() + "$").getBytes();
+			out.write(msg);
 			out.flush();
 
 			//System.out.println(message);
@@ -59,6 +60,14 @@ public class CommunicationManager extends Thread
 		String s ="";
 		try {
 			s = in.readUTF();
+			
+			if(!checkChecksum(s)) {
+				while(in.available() > 0) {
+					in.read();
+				}
+				return;
+			}
+			
 		}catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -77,6 +86,19 @@ public class CommunicationManager extends Thread
 			case "pos": receivePos(sp[1]);
 		}
 	}
+	
+    public boolean checkChecksum(String data)
+    {
+    	int m = data.indexOf("@");
+        String checkSum = data.substring(m+1);
+        int checkBody = data.substring(0,m).hashCode();
+        String checkString = ""+checkBody;
+        if(checkSum.equals(checkString))
+        {  	
+        	return true;
+        }
+    	return false;
+    }
 	
 	public void receivePos(String p) {
 		String[] s = split(p, ';', 2);

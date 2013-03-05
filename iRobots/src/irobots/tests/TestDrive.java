@@ -20,7 +20,7 @@ public class TestDrive {
 		}
 		nav.rotateTo(0);*/
 		
-		nav.getMoveController().forward();
+		/*nav.getMoveController().forward();
 		
 		while(!s.lineDetected());
 		
@@ -29,7 +29,12 @@ public class TestDrive {
 		Pose p = nav.getPoseProvider().getPose();
 		System.out.println("Pos:"+p.getX()+"/"+p.getY());
 		
-		while(!Button.ESCAPE.isDown());
+		while(!Button.ESCAPE.isDown());*/
+		
+		nav.addWaypoint(100, 0);
+		nav.addWaypoint(100, 100);
+		nav.followPath();
+		nav.waitForStop();
 		
 		/*try {
 			Thread.sleep(1000);

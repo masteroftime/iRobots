@@ -26,22 +26,25 @@ public class FollowBehaviour implements Behavior {
 	private Navigator nav;
 	private Camera cam;
 	private volatile boolean suppressed = false;
+	private int fRobot;
 	
 	public FollowBehaviour() {
 		this.nav = Global.navigator;
 		this.cam = Global.camera;
+		fRobot = -1;
 	}
 
 	@Override
 	public boolean takeControl() {
+		suppressed = false;
 		return cam.robotDetected();
 	}
 
 	@Override
 	public void action() {
-		suppressed = false;
+		DifferentialPilot p = (DifferentialPilot)nav.getMoveController();
 		nav.clearPath();
-		double speed = nav.getMoveController().getTravelSpeed();
+		double speed = p.getTravelSpeed();
 		
 		while(!suppressed) {
 			DetectedObject[] objs = cam.detectRobots();
@@ -49,7 +52,20 @@ public class FollowBehaviour implements Behavior {
 			
 			if(nearID == -1) {
 				new Graphics().fillRect(0, 0, 100, 63);
-				continue;
+				
+				if(fRobot != -1) {
+					Robot fr = Global.robots[fRobot];
+					float angle = fr.angleTo(Robot.me.getLocation())+180;
+					
+					//if other robot is driving towards us we make a 180° turn reversing the following order
+					if(Math.abs(angle - fr.getHeading()) < 30) {
+						p.rotate(180);
+						fRobot = -1;
+					} else {
+						
+					}
+				}
+				break;
 			}
 			
 			DetectedObject nearest = objs[nearID];
@@ -72,8 +88,6 @@ public class FollowBehaviour implements Behavior {
 				
 				if(distance < 8)
 					distance = 0;
-				
-				DifferentialPilot p = (DifferentialPilot)nav.getMoveController();
 				
 				if(Math.abs(angle) > 4) {
 					p.rotate(-angle, true);
