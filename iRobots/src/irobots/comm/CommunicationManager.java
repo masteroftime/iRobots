@@ -29,18 +29,29 @@ public class CommunicationManager extends Thread
 		connected = new ArrayList<Integer>(4);
 	}
 	
-	public synchronized void sendMessage(String message, boolean ack) {
+	public synchronized void sendMessage(String message) {
 		try {
 			out.writeUTF(message);
 			out.flush();
 			
 			System.out.println(message);
 			
-			if(ack) {
+			/*if(ack) {
 				waitForAck();
-			}
+			}*/
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+	public void receiveMessage() {
+		String s ="";
+		try {
+			s = in.readUTF();
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		switch (s) {
+		  case "whateva": callMethod();
 		}
 	}
 	
@@ -54,6 +65,32 @@ public class CommunicationManager extends Thread
 	}
 	
 	public void sendHello() {
-		sendMessage("hello:"+Global.id, false);
+		sendMessage("hello:"+Global.id);
 	}
-}
+	public void sendBye() {
+		sendMessage("bye:"+Global.id);
+	}
+	/*public void sendAck(int remote) {
+		sendMessage("ack:"+remote+";"+Global.id, false);
+	}*/
+	/*public void sendNotAck(int remote) {
+		sendMessage("nack:"+remote+";"+Global.id);
+	}*/
+	public void sendPos() {
+	  String s = "pos:"+Global.id+";"+Robot.me.getX()+"/"+Robot.me.getY()+"/"+Robot.me.getHeading()+"/";
+	  if(Robot.me.isPositionAbsolute()){
+	    s+= "1";
+	  }else{
+	    s+="0";
+	  }
+	  sendMessage(s);
+	}
+	public void sendSee(int remote,int dx,int dy,int dangle) {
+	  String s = "see:"+remote+";"+Global.id+";"+dx+"/"+dy+"/"+angle;
+	  if(Robot.me.isPositionAbsolute()){
+	    s+= "1";
+	  }else{
+	    s+="0";
+	  }
+	  sendMessage(s);
+	}
