@@ -21,8 +21,8 @@ import lejos.robotics.subsumption.Behavior;
  */
 public class LineBehaviour implements Behavior {
 	
-	public static final float FIELD_WIDTH = 0;
-	public static final float FIELD_HEIGHT = 0;
+	public static final float FIELD_WIDTH = 75;
+	public static final float FIELD_HEIGHT = 75;
 	
 	private Navigator nav;
 	private ColorSensor color;
@@ -51,18 +51,18 @@ public class LineBehaviour implements Behavior {
 			Robot.me.setFixedY(FIELD_HEIGHT);
 		}
 		else if(225 < deg) {
-			Robot.me.setFixedX(0);
+			Robot.me.setFixedX(FIELD_WIDTH);
 		}
 		else if(135 < deg) {
 			Robot.me.setFixedY(0);
 		}
 		else {
-			Robot.me.setFixedX(FIELD_WIDTH);
+			Robot.me.setFixedX(0);
 		}
 		
 		nav.getPoseProvider().setPose(Robot.me);
 		
-		float heading = Global.compass.getDegrees()+180;
+		float heading = deg+180;
 		if(heading > 360) heading -= 360;
 		
 		DifferentialPilot p = (DifferentialPilot)nav.getMoveController();

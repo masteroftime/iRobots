@@ -18,7 +18,7 @@ public class TestPos {
 			x = r.nextInt(100);
 			y = r.nextInt(100);
 			angle = (int)(r.nextDouble()*360);
-			comm.sendMessage("pos:0;"+x+"/"+y+"/"+angle, false);
+			comm.sendMessage("pos:0;"+x+"/"+y+"/"+angle);
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

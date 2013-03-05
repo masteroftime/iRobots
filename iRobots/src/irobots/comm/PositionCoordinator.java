@@ -1,5 +1,8 @@
 package irobots.comm;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import lejos.robotics.localization.PoseProvider;
 import lejos.robotics.navigation.Pose;
 import irobots.Global;
@@ -18,6 +21,15 @@ public class PositionCoordinator extends Thread
 		
 		this.setDaemon(true);
 		this.start();
+		
+		Timer t = new Timer();
+		t.scheduleAtFixedRate(new TimerTask() {
+			
+			@Override
+			public void run() {
+				Global.comm.sendPos();
+			}
+		}, 250, 250);
 	}
 	
 	@Override
@@ -29,6 +41,7 @@ public class PositionCoordinator extends Thread
 			p.setHeading(angle);
 			
 			Robot.me = Robot.meFromPose(p);
+			pose.setPose(p);
 			
 			Thread.yield();
 		}

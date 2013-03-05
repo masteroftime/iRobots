@@ -12,10 +12,12 @@ public class Robot extends Pose
 {
 	public static Robot me = null;
 	
+	private int id;
+	
 	private boolean positionAbsolute;
 	
-	private transient boolean xAbsolute;
-	private transient boolean yAbsolute;
+	private boolean xAbsolute;
+	private boolean yAbsolute;
 	
 	public Robot() {
 		super();
@@ -54,6 +56,15 @@ public class Robot extends Pose
 		r.positionAbsolute = me.positionAbsolute;
 		r.xAbsolute = me.xAbsolute;
 		r.yAbsolute = me.yAbsolute;
+		r.id = me.id;
 		return r;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 }

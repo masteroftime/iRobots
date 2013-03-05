@@ -8,10 +8,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import irobots.comm.CommunicationManager;
 import irobots.comm.PositionCoordinator;
 import irobots.comm.Robot;
 import irobots.vision.Camera;
 import irobots.vision.ColorSensor;
+import irobots.vision.CompassSensor;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 import lejos.nxt.Motor;
@@ -25,19 +27,22 @@ public class Global
 	public static Camera camera;
 	public static Navigator navigator;
 	public static ColorSensor color;
-	public static CompassHTSensor compass;
+	public static CompassSensor compass;
 	public static Robot[] robots;
 	public static PositionCoordinator posKoord;
+	public static CommunicationManager comm;
 	
 	public static int id;
 	
 	public static void initGlobals() {
+		robots = new Robot[3];
 		camera = new Camera();
 		//Creates the Navigator 4.3 - Tire diameter; 10.15 - Distance between center of the tires
 		navigator = new Navigator(new DifferentialPilot(4.3, 10.15, Motor.B, Motor.C));
 		color = new ColorSensor();
-		compass = new CompassHTSensor(SensorPort.S3);
+		compass = new CompassSensor();
 		posKoord = new PositionCoordinator();
+		comm = new CommunicationManager();
 		
 		File f = new File("robId.bin");
 		if(f.exists()) {

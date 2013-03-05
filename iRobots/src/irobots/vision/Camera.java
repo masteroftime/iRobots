@@ -5,6 +5,7 @@ import irobots.comm.Robot;
 import java.awt.Rectangle;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import javax.microedition.lcdui.Graphics;
 
@@ -40,7 +41,10 @@ public class Camera {
 		ArrayList<Rectangle> objs = new ArrayList<>(n);
 		for(int i = 0; i < n; i++) {
 			if(cam.getObjectColor(i) == colormap) {
-				objs.add(cam.getRectangle(i));
+				Rectangle r = cam.getRectangle(i);
+				if(r.width * r.height > 20) {
+					objs.add(cam.getRectangle(i));
+				}
 			}
 		}
 		
@@ -79,7 +83,7 @@ public class Camera {
 		return false;
 	}
 	
-	public Robot detectRobot(int colormap) {
+	/*public Robot detectRobot(int colormap) {
 		if(!objectDetected(colormap))
 			return null;
 
@@ -110,6 +114,44 @@ public class Camera {
 		rob.setLocation(rob.pointAt((float)getObjectDistance(obj, 10.0, 4.7), (float)getObjectAngle(objs[0])));
 		rob.setHeading((float)(Robot.me.getHeading()+getObjectAngle(obj)));
 		return rob;
+	}*/
+	
+	public DetectedObject detectRobot(int colormap) {
+		if(!objectDetected(colormap))
+			return null;
+
+		Rectangle[] objs = getObjects(colormap);
+		
+		if(objs.length == 0) {
+			return null;
+		}
+		
+		/*Graphics g = new Graphics();
+		g.clear();
+		
+		for(Rectangle o : objs) {
+			g.drawRect(camToScreenX(o.x), camToScreenY(o.y), camToScreenX(o.width), camToScreenY(o.height));
+			//g.drawRect(o.x, o.y, o.width, o.height);
+		}
+		
+		g.drawString(""+colormap, 49, 63, Graphics.BOTTOM | Graphics.HCENTER);*/
+		
+		Rectangle obj = objs[0];
+		
+		if(objs.length > 1) {
+			obj = mergeObjects(objs);
+		}
+
+		/*rob = new Robot();
+		rob.setLocation(rob.pointAt((float)getObjectDistance(obj, 10.0, 4.7), (float)getObjectAngle(objs[0])));
+		rob.setHeading((float)(Robot.me.getHeading()+getObjectAngle(obj)));
+		return rob;*/
+		
+		DetectedObject rob = new DetectedObject(obj, colormap);
+		rob.setAngle((float)getObjectAngle(obj));
+		rob.setDistance((float)getObjectDistance(obj, 5, 10));
+		
+		return rob;
 	}
 	
 	public NXTCam getCamera() {
@@ -139,20 +181,36 @@ public class Camera {
 		for(Rectangle r : robs) {
 			if(r != null && getObjectDistance(r, 10, 5) < distance) {
 				ret = r;
-				distance = getObjectDistance(r, 10, 5);
+				distance = getObjectDistance(r, 15, 10);
 			}
 		}
 		
 		return ret;
 	}
 	
-	public Robot[] detectRobots() {
-		Robot[] r = new Robot[3];
+	public int getNearestId(DetectedObject[] objs) {
+		float distance = Float.MAX_VALUE;
+		int id = -1;
+		
+		for(int i = 0; i < objs.length; i++) {
+			if(objs[i] != null && objs[i].getDistance() < distance) {
+				distance = objs[i].getDistance();
+				id = i;
+			}
+		}
+		
+		return id;
+	}
+	
+	public DetectedObject[] detectRobots() {
+		DetectedObject[] r = new DetectedObject[3];
 		r[0] = detectRobot(0);
 		r[1] = detectRobot(1);
 		r[2] = detectRobot(2);
 		
-		int c = 0;
+		return r;
+		
+		/*int c = 0;
 		
 		for(Robot rob : r) {
 			if(rob != null) c++;
@@ -168,7 +226,7 @@ public class Camera {
 			}
 		}
 		
-		return robs;
+		return robs;*/
 	}
 	
 	/**
@@ -223,6 +281,25 @@ public class Camera {
 			if(objs[i].height * objs[i].width > size) {
 				r = objs[i];
 				size = r.height * r.width;
+			}
+		}
+		
+		Rectangle bigr = new Rectangle(r.x-r.width/2, r.y-r.height/2, r.width*2, r.height*2);
+		
+		for(int i = 0; i < objs.length; i++) {
+			if(objs[i] == null)
+				continue;
+			
+			if(r.intersects(objs[i]) || bigr.intersects(objs[i])) {
+				if(objs[i].x < r.x) r.x = objs[i].x;
+				if(objs[i].y < r.y) r.y = objs[i].y;
+				if(objs[i].width+objs[i].x > r.x + r.width)
+					r.width = objs[i].width+objs[i].x-r.x;
+				if(objs[i].height+objs[i].y > r.y + r.height)
+					r.height = objs[i].height+objs[i].y-r.y;
+				bigr = new Rectangle(r.x-r.width/2, r.y-r.height/2, r.width*2, r.height*2);
+				objs[i] = null;
+				i = 0;
 			}
 		}
 		
