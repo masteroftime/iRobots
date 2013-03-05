@@ -1,8 +1,11 @@
 package irobots.behaviour;
 
+import javax.microedition.lcdui.Graphics;
+
 import irobots.Global;
 import irobots.comm.Robot;
 import irobots.vision.ColorSensor;
+import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.navigation.Navigator;
 import lejos.robotics.navigation.Pose;
 import lejos.robotics.subsumption.Behavior;
@@ -39,7 +42,7 @@ public class LineBehaviour implements Behavior {
 	 */
 	@Override
 	public void action() {
-		System.out.println("At the line");
+		new Graphics().fillRect(0, 0, 100, 63);
 		Robot.me =  Robot.meFromPose(nav.getPoseProvider().getPose());
 		
 		float deg = Global.compass.getDegrees();
@@ -59,11 +62,18 @@ public class LineBehaviour implements Behavior {
 		
 		nav.getPoseProvider().setPose(Robot.me);
 		
-		Pose p = nav.getPoseProvider().getPose();
-		p.rotateUpdate(180);
-		nav.clearPath();
-		nav.goTo(p.getX(), p.getY(), p.getHeading());
-		nav.waitForStop();
+		float heading = Global.compass.getDegrees()+180;
+		if(heading > 360) heading -= 360;
+		
+		DifferentialPilot p = (DifferentialPilot)nav.getMoveController();
+		p.stop();
+		p.travel(-5);
+		p.rotate(180);
+		
+		if(Global.color.lineDetected()) {
+			float diff = Global.compass.getDegrees()-heading;
+			p.rotate(diff);
+		}
 	}
 
 	/**

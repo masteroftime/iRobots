@@ -212,7 +212,7 @@ public class Camera {
 			res = SIZE_X;
 		}
 		
-		return (rsize * res) / (psize * 2 * Math.tan(VIEW_ANGLE / 2));
+		return -(rsize * res) / (psize * 2 * Math.tan(VIEW_ANGLE / 2));
 	}
 	
 	public static Rectangle mergeObjects(Rectangle[] objs) {

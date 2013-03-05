@@ -1,5 +1,7 @@
 package irobots.behaviour;
 
+import javax.microedition.lcdui.Graphics;
+
 import irobots.Global;
 import lejos.robotics.navigation.Navigator;
 import lejos.robotics.subsumption.Behavior;
@@ -36,7 +38,7 @@ public class JustDriveBehaviour implements Behavior {
 	 */
 	@Override
 	public void action() {
-		System.out.println("Just Driving");
+		new Graphics().clear();
 		nav.getMoveController().forward();
 		//while(!suppressed); //not sure if needed
 	}
