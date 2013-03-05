@@ -24,12 +24,21 @@ public class USBSend
 		dIn = conn.openDataInputStream();
 	}
 	
-	public void sendData(String s) throws IOException
+	public void sendData(String s) 
 	{
-		System.out.println("Sending");
-		dOut.writeUTF(s);
-		dOut.flush();
-		System.out.println("Sent: " + s);
+		try {
+			dOut.writeUTF(s);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+			System.out.println("usberror");
+		}
+		try {
+			dOut.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("usberror");
+		}
 	}
 	
 	public USBConnection getState()

@@ -1,0 +1,12 @@
+
+public class Message 
+{
+	private String type;
+	private int x;
+	private int y;
+	private String id;
+	public Message()
+	{
+		
+	}
+}

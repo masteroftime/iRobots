@@ -1,0 +1,40 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import lejos.nxt.comm.BTConnection;
+import lejos.nxt.comm.Bluetooth;
+
+public class BluetoothConn 
+{
+	private BTConnection con;
+	private DataOutputStream out;
+	private DataInputStream in;
+	
+	private volatile boolean connected;
+	
+	public BluetoothConn()
+	{
+		con = Bluetooth.waitForConnection();
+		connected = true;
+		System.out.println("Connected");
+		connected = true;
+		out = con.openDataOutputStream();
+	}
+	
+	public void sendData(String data) throws IOException
+	{
+		if(!connected)
+		{
+			System.out.println("Not connected");
+				return;
+		}
+			out.writeUTF(data);
+			out.flush();
+	}
+	
+	public void closeConnection()
+	{
+		out.close();
+	}
+}

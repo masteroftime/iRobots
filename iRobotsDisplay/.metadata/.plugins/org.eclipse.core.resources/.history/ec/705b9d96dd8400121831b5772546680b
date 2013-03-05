@@ -1,0 +1,8 @@
+
+public class Bluetooth 
+{
+	public void send(String data)
+	{
+		
+	}
+}

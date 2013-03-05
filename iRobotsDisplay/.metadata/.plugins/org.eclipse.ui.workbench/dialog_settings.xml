@@ -16,6 +16,12 @@
 		<item value="8" key="DIALOG_Y_ORIGIN"/>
 		<item value="374" key="DIALOG_X_ORIGIN"/>
 	</section>
+	<section name="NewWizardAction">
+		<item value="org.lejos.nxt.ldt.NewPCProjectWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
+		<list key="NewWizardSelectionPage.STORE_EXPANDED_CATEGORIES_ID">
+			<item value="org.lejos.nxt.ldt.leJOSWizardCategory"/>
+		</list>
+	</section>
 	<section name="ImportExportAction">
 	</section>
 </section>

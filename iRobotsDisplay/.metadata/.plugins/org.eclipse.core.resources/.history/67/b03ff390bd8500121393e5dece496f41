@@ -1,0 +1,64 @@
+import java.io.DataInputStream;
+
+import java.util.Date;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import lejos.nxt.Button;
+
+public class Main 
+{
+	private USBSend usb;
+    static volatile boolean stop = false;
+    private DataInputStream in;
+    private NXTBee xbee;
+    private Thread rt;
+
+    public Main()
+    {
+    	xbee = new NXTBee();
+        System.out.println("I joined XBee");
+		System.out.println("Connection USB...");
+		usb = new USBSend();
+		System.out.println("...connected USB :) ");
+		
+    }
+    
+    public void relay() throws IOException
+    {
+    	while(xbee.getInputStream().read() != -1)
+    	{
+    		in = new DataInputStream(xbee.getInputStream());
+    		if(in.readUTF() != null && in.readUTF().length() < 50)
+    		{
+    			if(checkChecksum(in.readUTF()) == true)
+    			{
+    				usb.sendData(in.readUTF());
+    			}
+    			else
+    			{
+    				in = null;
+    			}
+    		}
+    	}
+    }
+    
+    public boolean checkChecksum(String data)
+    {
+    	int m = data.indexOf("@");
+        String checkSum = data.substring(m+1);
+        int checkBody = data.substring(0,m).hashCode();
+        String checkString = ""+checkBody;
+        if(checkSum.equals(checkString))
+        {  	
+        	return true;
+        }
+    	return false;
+    }
+    
+    public static void main(String[] args) 
+    {
+        new Main();        
+    }
+
+}

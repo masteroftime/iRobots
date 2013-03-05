@@ -1,4 +1,6 @@
 import java.io.DataInputStream;
+
+import java.util.Date;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
@@ -8,62 +10,62 @@ public class Main
 {
 	private USBSend usb;
     static volatile boolean stop = false;
+    private DataInputStream in;
+    private NXTBee xbee;
+    private Thread rt;
 
     public Main()
     {
-    	NXTBee xbee = new NXTBee();
-        Thread t = new Thread(xbee);
-        t.setDaemon(true);
-        t.start();
-        
-        final DataOutputStream out = new DataOutputStream(xbee.getOutputStream());
-        final DataInputStream in = new DataInputStream(xbee.getInputStream());
-        
-        try {
-            out.writeUTF("NXT Joined");
-            System.out.println("I joined XBee");
-            System.out.println("Connection USB...");
-            usb = new USBSend();
-            System.out.println("...connected USB :) ");
-        } catch (IOException e1) {
-            e1.printStackTrace();
+    	xbee = new NXTBee();
+    	Thread t = new Thread(xbee);
+    	t.setDaemon(true);
+    	t.start();
+        System.out.println("I joined XBee");
+		System.out.println("Connection USB...");
+		usb = new USBSend();
+		System.out.println("...connected USB :) ");
+		try {
+			relay();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Relay error");
+		}
+    }
+    
+    public void relay() throws IOException
+    {
+    	in = new DataInputStream(xbee.getInputStream());
+    	while(!Button.ESCAPE.isDown())
+    	{
+    		System.out.println("Was here!");
+    		String msg = in.readUTF();
+    		System.out.println("got message");
+			if(checkChecksum(msg) == true)
+			{
+				System.out.println("sending message");
+				usb.sendData(msg);
+				System.out.println("sent message");
+			}
+			else
+			{
+				System.out.println("CS Error");
+				while(in.available() > 0)
+					in.read();
+			}
+    	}
+    }
+    
+    public boolean checkChecksum(String data)
+    {
+    	int m = data.indexOf("@");
+        String checkSum = data.substring(m+1);
+        int checkBody = data.substring(0,m).hashCode();
+        String checkString = ""+checkBody;
+        if(checkSum.equals(checkString))
+        {  	
+        	return true;
         }
-        
-        Thread rt = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    while(!stop) {
-                        if(in.available() > 0) {
-                            String s = in.readUTF();
-                            if(s != null) {
-                                usb.sendData(s);
-                            }
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-        rt.start();
-        
-        try {
-            while(!Button.ESCAPE.isDown()) {
-                if(Button.ENTER.isDown()) {
-                    out.writeUTF("Button pressed");
-                    out.flush();
-                }
-                while(Button.ENTER.isDown());
-            }
-            out.writeUTF("NXT left");
-            stop = true;
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    	return false;
     }
     
     public static void main(String[] args) 

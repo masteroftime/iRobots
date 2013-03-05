@@ -1,0 +1,45 @@
+import lejos.nxt.*;
+import java.io.*;
+import lejos.nxt.comm.*;
+
+/**
+ * Test of Java streams over USB.
+ * Run the PC example, USBSend, to send data.
+ * 
+ * @author Lawrie Griffiths
+ *
+ */
+public class USBSend 
+{
+	private USBConnection conn;
+	private DataOutputStream dOut;
+	private DataInputStream dIn;
+	
+	public USBSend()
+	{
+		LCD.drawString("waiting", 0, 0);
+		conn = USB.waitForConnection();
+		dOut = conn.openDataOutputStream();
+		dIn = conn.openDataInputStream();
+	}
+	public static void main(String [] args) throws Exception 
+	{
+
+		
+		while(true) 
+		{
+            int b;
+            try
+            {
+                b = dIn.readInt();
+            }
+            catch (EOFException e) 
+            {
+                break;
+            }         
+			dOut.writeInt(-b);
+			dOut.flush();
+	        LCD.drawInt((int)b,8,0,1);
+		}
+	}
+}

@@ -1,0 +1,38 @@
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+import lejos.pc.comm.NXTCommLogListener;
+import lejos.pc.comm.NXTConnector;
+
+public class USBReceive 
+{	
+	private NXTConnector conn;
+	private DataInputStream inDat;
+	private DataOutputStream outDat;
+	
+	public USBReceive()
+	{
+		conn = new NXTConnector();
+	}
+	
+	public void connect()
+	{
+		if (!conn.connectTo("usb://")){
+			System.err.println("No NXT found using USB");
+			System.exit(1);
+		}
+		inDat = new DataInputStream(conn.getInputStream());    
+		outDat = new DataOutputStream(conn.getOutputStream());
+		String s = "";
+		while(true)
+		{
+			try {
+	        	 s = inDat.readUTF();
+	        } catch (IOException ioe) {
+	           System.err.println("IO Exception reading reply");
+	        }            
+	        System.out.println(" Received " + s);
+		}
+	}
+}

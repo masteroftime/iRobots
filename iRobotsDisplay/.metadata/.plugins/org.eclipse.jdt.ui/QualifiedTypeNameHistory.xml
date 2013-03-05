@@ -6,4 +6,17 @@
 <fullyQualifiedTypeName name="java.awt.Graphics"/>
 <fullyQualifiedTypeName name="java.awt.Color"/>
 <fullyQualifiedTypeName name="java.awt.Polygon"/>
+<fullyQualifiedTypeName name="NXTBee"/>
+<fullyQualifiedTypeName name="java.io.InputStream"/>
+<fullyQualifiedTypeName name="lejos.nxt.comm.Bluetooth"/>
+<fullyQualifiedTypeName name="BluetoothConn"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="lejos.pc.comm.NXTConnector"/>
+<fullyQualifiedTypeName name="lejos.pc.comm.NXTCommLogListener"/>
+<fullyQualifiedTypeName name="lejos.nxt.comm.USBConnection"/>
+<fullyQualifiedTypeName name="java.io.DataInputStream"/>
+<fullyQualifiedTypeName name="java.io.DataOutputStream"/>
+<fullyQualifiedTypeName name="USBReceive"/>
+<fullyQualifiedTypeName name="USBSend"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 </qualifiedTypeNameHistroy>
