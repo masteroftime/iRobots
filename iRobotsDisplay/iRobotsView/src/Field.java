@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Window.Type;
@@ -13,7 +14,8 @@ public class Field extends JPanel
 {
 	private ArrayList<Message> msg;
 	private final int rsize; //field size in robot steps
-	
+	private int rotation;
+
 	public Field()
 	{
 		initComponents();
@@ -33,25 +35,38 @@ public class Field extends JPanel
 	}
 	
 	@Override
-	public void paintComponent( Graphics g ) 
+	public void paintComponent( Graphics gf ) 
 	{
-        super.paintComponent(g);
+        super.paintComponent(gf);
+        Graphics2D g = (Graphics2D)gf;
+        
+        int field_size = (Math.min(getHeight(), getWidth())*2)/3;
+        g.translate((getWidth()-field_size)/2, (getHeight()-field_size)/2);
+        g.rotate(Math.toRadians(rotation), field_size/2, field_size/2);
+        
+        g.drawRect(0, 0, field_size, field_size);
+        
         if(msg.size()> 0) 
         {
         	Polygon p0 = new Polygon();
-        	Path2D.Double d0 = new Path2D.Double();
         	Polygon p1 = new Polygon();
         	Polygon p2 = new Polygon();
+        	double a0 = Double.NaN;
+        	double a1 = Double.NaN;
+        	double a2 = Double.NaN;
         	for(Message ms : msg)
         	{
+        		
         		if(ms.getType().equals("pos")) {
     				switch(ms.getId()) {
-    				case "0" : p0.addPoint(10+(ms.getX()*this.getHeight()/rsize), this.getHeight()-(ms.getY()*this.getHeight()/rsize)+10);
-    				
+    				case "0" : p0.addPoint((ms.getX()*field_size)/rsize, ((rsize-ms.getY())*field_size)/rsize);
+    				a0 = ms.getAngle();
     				break;
-    				case "1" : p1.addPoint(10+(ms.getX() *this.getHeight()/rsize), this.getHeight()-(ms.getY()*this.getHeight()/rsize)+10);
+    				case "1" : p1.addPoint((ms.getX()*field_size)/rsize, ((rsize-ms.getY())*field_size)/rsize);
+    				a1 = ms.getAngle();
     				break;
-    				case "2" : p2.addPoint(10+(ms.getX() *this.getHeight()/rsize), this.getHeight()-(ms.getY()*this.getHeight()/rsize)+10);
+    				case "2" : p2.addPoint((ms.getX()*field_size)/rsize, ((rsize-ms.getY())*field_size)/rsize);
+    				a2 = ms.getAngle();
     				break;
     				default : System.err.println("Unknown ID");
         			}
@@ -60,12 +75,30 @@ public class Field extends JPanel
 
             g.setColor(Color.RED);
         	g.drawPolyline(p0.xpoints, p0.ypoints, p0.npoints);
+        	drawRobot(a0, p0, g);
             g.setColor(Color.BLUE);
         	g.drawPolyline(p1.xpoints, p1.ypoints, p1.npoints);
+        	drawRobot(a1, p1, g);
             g.setColor(Color.GREEN);
         	g.drawPolyline(p2.xpoints, p2.ypoints, p2.npoints);
         	removeMsg();
+        	drawRobot(a2, p2, g);
         }
+	}
+	
+	private void drawRobot(double angle, Polygon p, Graphics2D g) {
+		if(angle != Double.NaN && p.npoints > 0) {
+			int x = p.xpoints[p.npoints-1];
+			int y = p.ypoints[p.npoints-1];
+			
+			g.translate(x, y);
+			g.rotate(Math.toRadians(angle));
+			
+			g.fillPolygon(new int[] {0, -8, 8}, new int[] {-8, 8, 8}, 3);
+			
+			g.rotate(-Math.toRadians(angle));
+			g.translate(-x, -y);
+		}
 	}
 	
 	public void removeMsg()
@@ -121,5 +154,11 @@ public class Field extends JPanel
 			invalidate();
 			repaint();
 		}
+	}
+	
+	public void setRotation(int rotation) {
+		this.rotation = rotation;
+		this.invalidate();
+		this.repaint();
 	}
 }

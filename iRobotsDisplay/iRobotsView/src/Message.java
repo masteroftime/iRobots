@@ -16,6 +16,14 @@ public class Message
 		this.angle = angle;
 	}
 
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
 	public String getType() {
 		return type;
 	}
