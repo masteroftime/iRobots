@@ -149,7 +149,7 @@ public class Camera {
 		
 		DetectedObject rob = new DetectedObject(obj, colormap);
 		rob.setAngle((float)getObjectAngle(obj));
-		rob.setDistance((float)getObjectDistance(obj, 5, 10));
+		rob.setDistance((float)getObjectDistance(obj, 20, 10));
 		
 		return rob;
 	}

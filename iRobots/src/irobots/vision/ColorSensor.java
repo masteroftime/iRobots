@@ -1,6 +1,5 @@
 package irobots.vision;
 
-import lejos.nxt.SensorConstants;
 import lejos.nxt.SensorPort;
 
 /**
@@ -22,6 +21,7 @@ public class ColorSensor {
 	}
 	
 	public boolean lineDetected() {
+		//return sensor.getColorID() != WHITE && sensor.getColorID() != lejos.nxt.ColorSensor.YELLOW;
 		return sensor.getColorID() == BLACK;
 	}
 	

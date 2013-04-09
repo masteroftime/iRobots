@@ -10,7 +10,7 @@ import lejos.robotics.navigation.Pose;
  */
 public class Robot extends Pose
 {
-	public static Robot me = null;
+	public static volatile Robot me = null;
 	
 	private int id;
 	

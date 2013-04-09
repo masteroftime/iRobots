@@ -1,7 +1,5 @@
 package irobots.behaviour;
 
-import javax.microedition.lcdui.Graphics;
-
 import irobots.Global;
 import lejos.robotics.navigation.Navigator;
 import lejos.robotics.subsumption.Behavior;
@@ -30,6 +28,7 @@ public class JustDriveBehaviour implements Behavior {
 	 */
 	@Override
 	public boolean takeControl() {
+		suppressed = false;
 		return true;
 	}
 
@@ -38,9 +37,19 @@ public class JustDriveBehaviour implements Behavior {
 	 */
 	@Override
 	public void action() {
-		new Graphics().clear();
 		nav.getMoveController().forward();
-		//while(!suppressed); //not sure if needed
+		while(!suppressed) {
+			nav.getMoveController().forward();
+			//Graphics g = new Graphics();
+			//g.clear();
+			//g.drawString((int)Robot.me.getX() + "/" + (int)Robot.me.getY(), 50, 33, Graphics.HCENTER | Graphics.VCENTER);
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

@@ -1,13 +1,13 @@
 package irobots.behaviour;
 
-import javax.microedition.lcdui.Graphics;
-
 import irobots.Global;
 import irobots.comm.Robot;
 import irobots.vision.ColorSensor;
+
+import javax.microedition.lcdui.Graphics;
+
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.navigation.Navigator;
-import lejos.robotics.navigation.Pose;
 import lejos.robotics.subsumption.Behavior;
 
 /**
@@ -21,8 +21,8 @@ import lejos.robotics.subsumption.Behavior;
  */
 public class LineBehaviour implements Behavior {
 	
-	public static final float FIELD_WIDTH = 75;
-	public static final float FIELD_HEIGHT = 75;
+	public static final float FIELD_WIDTH = 25;
+	public static final float FIELD_HEIGHT = 25;
 	
 	private Navigator nav;
 	private ColorSensor color;
@@ -34,7 +34,7 @@ public class LineBehaviour implements Behavior {
 
 	@Override
 	public boolean takeControl() {
-		return color.lineDetected();
+		return color.lineDetected();// || Robot.me.getX() > 80 || Robot.me.getY() > 80 || Robot.me.getX() < -5 || Robot.me.getY() < -5; 
 	}
 
 	/**
@@ -45,22 +45,10 @@ public class LineBehaviour implements Behavior {
 		Graphics g = new Graphics();
 		g.fillRect(0, 0, 100, 63);
 		g.setColor(1);
-		Robot.me =  Robot.meFromPose(nav.getPoseProvider().getPose());
 		
 		float deg = Global.compass.getDegrees();
 		
-		if(Robot.me.getX() < 0) {
-			Robot.me.setFixedX(0);
-		}
-		if(Robot.me.getY() < 0) {
-			Robot.me.setFixedY(0);
-		}
-		if(Robot.me.getX() > 75) {
-			Robot.me.setFixedX(75);
-		}
-		if(Robot.me.getY() < 75) {
-			Robot.me.setFixedY(75);
-		}
+
 		
 		/*if(315 < deg || deg < 45) {
 			g.drawString("North", 50, 30, Graphics.HCENTER | Graphics.VCENTER);
@@ -79,20 +67,40 @@ public class LineBehaviour implements Behavior {
 			Robot.me.setFixedY(0);
 		}*/
 		
-		nav.getPoseProvider().setPose(Robot.me);
-		
-		float heading = deg+180;
+		float heading = deg+170;
 		if(heading > 360) heading -= 360;
 		
 		DifferentialPilot p = (DifferentialPilot)nav.getMoveController();
 		p.stop();
 		p.travel(-5);
-		p.rotate(180);
 		
-		if(Global.color.lineDetected()) {
-			float diff = Global.compass.getDegrees()-heading;
-			p.rotate(diff);
+		if(!Global.camera.robotDetected()) {
+			p.rotate(170);
+			
+			if(Global.color.lineDetected()) {
+				float diff = Global.compass.getDegrees()-heading;
+				p.rotate(diff);
+			}
+		} else {
+			p.travel(-5);
 		}
+		
+		Robot.me =  Robot.meFromPose(nav.getPoseProvider().getPose());
+		
+		if(Robot.me.getX() < 5) {
+			Robot.me.setFixedX(0);
+		}
+		if(Robot.me.getY() < 5) {
+			Robot.me.setFixedY(0);
+		}
+		if(Robot.me.getX() > 30) {
+			Robot.me.setFixedX(25);
+		}
+		if(Robot.me.getY() > 30) {
+			Robot.me.setFixedY(25);
+		}
+		
+		nav.getPoseProvider().setPose(Robot.me);
 	}
 
 	/**

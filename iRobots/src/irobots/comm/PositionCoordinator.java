@@ -4,6 +4,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import lejos.robotics.localization.PoseProvider;
+import lejos.robotics.navigation.Move;
 import lejos.robotics.navigation.Pose;
 import irobots.Global;
 
@@ -39,6 +40,12 @@ public class PositionCoordinator extends Thread
 			
 			Pose p = pose.getPose();
 			p.setHeading(angle);
+			
+			//System.out.println((int)p.getX() + "/" + (int)p.getY());
+			
+			//Move m = Global.navigator.getMoveController().getMovement();
+			
+			
 			
 			Robot.me = Robot.meFromPose(p);
 			pose.setPose(p);

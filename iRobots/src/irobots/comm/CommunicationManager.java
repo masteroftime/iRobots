@@ -57,46 +57,54 @@ public class CommunicationManager extends Thread
 	}
 	
 	public void receiveMessage() {
-		String s ="";
 		try {
-			s = in.readUTF();
+			String msg = "";
+    		int b;
+    		//System.out.println("Was here!");
+    		//String msg = in.readUTF();
+    		while((b = in.read()) != -1)
+    		{
+    			msg += (char)b;
+    			if(msg.charAt(msg.length()-1) == '$') break;
+    		}
 			
-			if(!checkChecksum(s)) {
+			if(!checkChecksum(msg)) {
 				while(in.available() > 0) {
 					in.read();
 				}
 				return;
 			}
 			
+			String[] sp = split(msg, ':', 2);
+			
+			if(sp == null)
+				return;
+			
+			switch (sp[0]) {
+				case "pos": receivePos(sp[1]);
+			}
+			
 		}catch (IOException e) {
 			e.printStackTrace();
-		}
-		
-		int i = s.indexOf(':');
-		
-		if(i == -1)
-			return;
-		
-		String[] sp = split(s, ':', 2);
-		
-		if(sp == null)
-			return;
-		
-		switch (sp[0]) {
-			case "pos": receivePos(sp[1]);
 		}
 	}
 	
     public boolean checkChecksum(String data)
     {
-    	int m = data.indexOf("@");
-        String checkSum = data.substring(m+1);
-        int checkBody = data.substring(0,m).hashCode();
-        String checkString = ""+checkBody;
-        if(checkSum.equals(checkString))
-        {  	
-        	return true;
-        }
+    	if(data != null)
+    	{
+	    	int m = data.indexOf("@");
+	    	if(m != -1)
+	    	{
+		        String checkSum = data.substring(m+1,data.length()-1);
+		        int checkBody = data.substring(0,m).hashCode();
+		        String checkString = ""+checkBody;
+		        if(checkSum.equals(checkString))
+		        {  	
+		        	return true;
+		        } 
+	    	}
+    	}
     	return false;
     }
 	
