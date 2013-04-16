@@ -13,11 +13,8 @@ import lejos.robotics.subsumption.Behavior;
 /**
  * This Behavior causes the robot not to cross the line which marks
  * the field boundaries if it is detected. When the line is detected
- * the robot will do a 180° turn and the pass control to subsequent
+ * the robot will do a 180° turn and then pass control to subsequent
  * behaviors.
- * 
- * @author Martin Feiler
- *
  */
 public class LineBehaviour implements Behavior {
 	
@@ -32,9 +29,12 @@ public class LineBehaviour implements Behavior {
 		this.color = Global.color;
 	}
 
+	/**
+	 * Takes control when the line is detected by the color sensor.
+	 */
 	@Override
 	public boolean takeControl() {
-		return color.lineDetected();// || Robot.me.getX() > 80 || Robot.me.getY() > 80 || Robot.me.getX() < -5 || Robot.me.getY() < -5; 
+		return color.lineDetected(); 
 	}
 
 	/**
@@ -42,31 +42,14 @@ public class LineBehaviour implements Behavior {
 	 */
 	@Override
 	public void action() {
+		//************* DRAWING ****************
 		Graphics g = new Graphics();
 		g.fillRect(0, 0, 100, 63);
 		g.setColor(1);
+		//************* DRAWING ****************
 		
+		//calculate new heading
 		float deg = Global.compass.getDegrees();
-		
-
-		
-		/*if(315 < deg || deg < 45) {
-			g.drawString("North", 50, 30, Graphics.HCENTER | Graphics.VCENTER);
-			Robot.me.setFixedX(FIELD_HEIGHT);
-		}
-		else if(225 < deg) {
-			g.drawString("West", 50, 30, Graphics.HCENTER | Graphics.VCENTER);
-			Robot.me.setFixedY(FIELD_WIDTH);
-		}
-		else if(135 < deg) {
-			g.drawString("South", 50, 30, Graphics.HCENTER | Graphics.VCENTER);
-			Robot.me.setFixedX(0);
-		}
-		else {
-			g.drawString("East", 50, 30, Graphics.HCENTER | Graphics.VCENTER);
-			Robot.me.setFixedY(0);
-		}*/
-		
 		float heading = deg+170;
 		if(heading > 360) heading -= 360;
 		
@@ -74,9 +57,11 @@ public class LineBehaviour implements Behavior {
 		p.stop();
 		p.travel(-5);
 		
+		//BeSt prototype: when following the robot outside the field do not turn but just go back a bit
 		if(!Global.camera.robotDetected()) {
 			p.rotate(170);
 			
+			//when the line is still detected correct the turning withe the value from the compass
 			if(Global.color.lineDetected()) {
 				float diff = Global.compass.getDegrees()-heading;
 				p.rotate(diff);
@@ -85,21 +70,24 @@ public class LineBehaviour implements Behavior {
 			p.travel(-5);
 		}
 		
+		//update the position in Robot.me
 		Robot.me =  Robot.meFromPose(nav.getPoseProvider().getPose());
 		
-		if(Robot.me.getX() < 5) {
+		//reset the robot position if its out of the fields boundaries
+		if(Robot.me.getX() < 0) {
 			Robot.me.setFixedX(0);
 		}
-		if(Robot.me.getY() < 5) {
+		if(Robot.me.getY() < 0) {
 			Robot.me.setFixedY(0);
 		}
-		if(Robot.me.getX() > 30) {
-			Robot.me.setFixedX(25);
+		if(Robot.me.getX() > FIELD_WIDTH+5) {
+			Robot.me.setFixedX(FIELD_WIDTH);
 		}
-		if(Robot.me.getY() > 30) {
-			Robot.me.setFixedY(25);
+		if(Robot.me.getY() > FIELD_HEIGHT+5) {
+			Robot.me.setFixedY(FIELD_HEIGHT);
 		}
 		
+		//update the position in the navigator
 		nav.getPoseProvider().setPose(Robot.me);
 	}
 

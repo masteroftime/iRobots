@@ -5,20 +5,25 @@ import irobots.Global;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 
-import lejos.nxt.Button;
 import lejos.nxt.addon.NXTBee;
 
+/**
+ * The CommunicationManager provides functions which can be used
+ * to send messages to other robots. It also runs a background
+ * thread that receives messages from the other robots and
+ * processes the received messages.
+ */
 public class CommunicationManager extends Thread
 {
 	private NXTBee bee;
 	private DataOutputStream out;
 	private DataInputStream in;
 
-	ArrayList<Integer> connected;
-	ArrayList<Integer> ack;
-
+	/**
+	 * Creates a new CommunicationManager instance and starts
+	 * the message receiving thread.
+	 */
 	public CommunicationManager() {
 		bee = new NXTBee();
 		Thread t = new Thread(bee);
@@ -27,7 +32,6 @@ public class CommunicationManager extends Thread
 
 		out = new DataOutputStream(bee.getOutputStream());
 		in = new DataInputStream(bee.getInputStream());
-		connected = new ArrayList<Integer>(4);
 		
 		this.setDaemon(true);
 		this.start();
@@ -40,28 +44,32 @@ public class CommunicationManager extends Thread
 		}
 	}
 
+	/**
+	 * Sends a message.
+	 * @param message The message to send without checksum.
+	 */
 	public synchronized void sendMessage(String message) {
 		try {
 			byte[] msg = (message+"@"+message.hashCode() + "$").getBytes();
 			out.write(msg);
 			out.flush();
-
-			//System.out.println(message);
-
-			/*if(ack) {
-				waitForAck();
-			}*/
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
+	/**
+	 * Receives a message from another robot and processes the
+	 * received message. This method blocks until a message is
+	 * received. This method is used by the message receiving
+	 * thread to receive and process incoming messages and
+	 * should not be called directly.
+	 */
 	public void receiveMessage() {
 		try {
 			String msg = "";
     		int b;
-    		//System.out.println("Was here!");
-    		//String msg = in.readUTF();
+    		
     		while((b = in.read()) != -1)
     		{
     			msg += (char)b;
@@ -89,6 +97,10 @@ public class CommunicationManager extends Thread
 		}
 	}
 	
+	/**
+	 * Checks if the checksum of the given message is valid.
+	 * @param data The message to check.  
+	 */
     public boolean checkChecksum(String data)
     {
     	if(data != null)
@@ -108,6 +120,9 @@ public class CommunicationManager extends Thread
     	return false;
     }
 	
+    /**
+     * Processes a pos message.
+     */
 	public void receivePos(String p) {
 		String[] s = split(p, ';', 2);
 		
@@ -130,31 +145,10 @@ public class CommunicationManager extends Thread
 			return;
 		}
 	}
-
-	/*public void waitForAck() {
-		int count = connected.size();
-		ack = new ArrayList<Integer>(count);
-
-		while(ack.size() < count) {
-			Thread.yield();
-		}
-	}*/
-
-	/*public void sendHello() {
-		sendMessage("hello:"+Global.id);
-	}
 	
-	public void sendBye() {
-		sendMessage("bye:"+Global.id);
-	}*/
-	
-	/*public void sendAck(int remote) {
-		sendMessage("ack:"+remote+";"+Global.id, false);
-	}*/
-	/*public void sendNotAck(int remote) {
-		sendMessage("nack:"+remote+";"+Global.id);
-	}*/
-	
+	/**
+	 * Sends the current position of the robot.
+	 */
 	public void sendPos() {
 		String s = "pos:"+Global.id+";"+(int)Robot.me.getX()+"/"+(int)Robot.me.getY()+"/"+(int)Robot.me.getHeading()+"/";
 		if(Robot.me.isPositionAbsolute()){
@@ -165,8 +159,14 @@ public class CommunicationManager extends Thread
 		sendMessage(s);
 	}
 	
-	public void sendSee(int remote,int dx,int dy,int dangle) {
-		String s = "see:"+remote+";"+Global.id+";"+dx+"/"+dy+"/"+dangle;
+	/**
+	 * Sends a see message.
+	 * @param remote The remot robots id
+	 * @param rx The detected x-coordinate of the remote robot
+	 * @param ry The detected y-cooddinate of the remote robot
+	 */
+	public void sendSee(int remote,int rx,int ry) {
+		String s = "see:"+remote+";"+Global.id+";"+rx+"/"+ry+"/";
 		if(Robot.me.isPositionAbsolute()){
 			s+= "1";
 		}else{
@@ -175,6 +175,15 @@ public class CommunicationManager extends Thread
 		sendMessage(s);
 	}
 	
+	/**
+	 * Splits a string at a given char.
+	 * @param s The string to split
+	 * @param c The char at which should be split.
+	 * @param count The number of parts after the split.
+	 * @return A String array with the length of count. If the
+	 * split char does not occur often enough the remaining Strings
+	 * in the array equal to null. 
+	 */
 	public static String[] split(String s, char c, int count) {
 		String[] ret = new String[count];
 		

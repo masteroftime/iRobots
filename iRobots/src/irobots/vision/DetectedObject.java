@@ -2,16 +2,18 @@ package irobots.vision;
 
 import java.awt.Rectangle;
 
+/**
+ * This class contains information about an object
+ * which has been detected by the robots camera sensor
+ * such as distance and angle to the other object as
+ * well as the colormap id of the detected object.
+ */
 public class DetectedObject 
 {
 	private Rectangle rect;
 	private float angle;
 	private int id;
 	private float distance;
-	
-	private boolean hasDistance;
-	private boolean hasAngle;
-	
 	
 	public DetectedObject(Rectangle rect, int id) {
 		super();
@@ -50,6 +52,4 @@ public class DetectedObject
 	public void setDistance(float distance) {
 		this.distance = distance;
 	}
-	
-	
 }

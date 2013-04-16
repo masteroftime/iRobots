@@ -4,11 +4,6 @@ import irobots.behaviour.ExitProgramBehavior;
 import irobots.behaviour.FollowBehaviour;
 import irobots.behaviour.JustDriveBehaviour;
 import irobots.behaviour.LineBehaviour;
-import irobots.vision.ColorSensor;
-import lejos.nxt.Motor;
-import lejos.robotics.localization.PoseProvider;
-import lejos.robotics.navigation.DifferentialPilot;
-import lejos.robotics.navigation.Navigator;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 

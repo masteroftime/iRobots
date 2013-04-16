@@ -1,6 +1,9 @@
 package irobots.behaviour;
 
+import javax.microedition.lcdui.Graphics;
+
 import irobots.Global;
+import irobots.comm.Robot;
 import lejos.robotics.navigation.Navigator;
 import lejos.robotics.subsumption.Behavior;
 
@@ -9,9 +12,6 @@ import lejos.robotics.subsumption.Behavior;
  * idle and no other behaviors take control over the robot.
  * This behavior can be used to let the robot explore the
  * field if no other action has to be done.
- * 
- * @author Martin Feiler
- *
  */
 public class JustDriveBehaviour implements Behavior {
 	
@@ -23,8 +23,9 @@ public class JustDriveBehaviour implements Behavior {
 	}
 
 	/**
-	 * always returns true because this is the behaviour which should be
-	 * executed if nothing else has to be done
+	 * Always returns true because this behavior does not have a certain
+	 * trigger but is a behavior which can be executed when the robot is
+	 * idle.
 	 */
 	@Override
 	public boolean takeControl() {
@@ -40,18 +41,23 @@ public class JustDriveBehaviour implements Behavior {
 		nav.getMoveController().forward();
 		while(!suppressed) {
 			nav.getMoveController().forward();
-			//Graphics g = new Graphics();
-			//g.clear();
-			//g.drawString((int)Robot.me.getX() + "/" + (int)Robot.me.getY(), 50, 33, Graphics.HCENTER | Graphics.VCENTER);
+			
+			//************* DRAWING ****************
+			Graphics g = new Graphics();
+			g.clear();
+			g.drawString((int)Robot.me.getX() + "/" + (int)Robot.me.getY(), 50, 33, Graphics.HCENTER | Graphics.VCENTER);
+			//************* DRAWING ****************
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
+	/**
+	 * Suppresses this behavior.
+	 */
 	@Override
 	public void suppress() {
 		suppressed = true;

@@ -17,28 +17,30 @@ import lejos.robotics.subsumption.Behavior;
 /**
  * This behavior makes the robot follow any other robot which
  * has been detected by the camera.
- * 
- * @author Martin Feiler
- *
  */
 public class FollowBehaviour implements Behavior {
 	private Navigator nav;
 	private Camera cam;
 	private volatile boolean suppressed = false;
-	private int fRobot;
 	
 	public FollowBehaviour() {
 		this.nav = Global.navigator;
 		this.cam = Global.camera;
-		fRobot = -1;
 	}
 
+	/**
+	 * This behavior takes control whenever another robot has been detected.
+	 */
 	@Override
 	public boolean takeControl() {
 		suppressed = false;
 		return cam.robotDetected();
 	}
 
+	/**
+	 * On activation the robot follows the detected robot at a certain
+	 * distance.
+	 */
 	@Override
 	public void action() {
 		DifferentialPilot p = (DifferentialPilot)nav.getMoveController();
@@ -46,32 +48,15 @@ public class FollowBehaviour implements Behavior {
 		double speed = p.getTravelSpeed();
 		
 		while(!suppressed) {
+			//find out the nearest detected object
 			DetectedObject[] objs = cam.detectRobots();
 			int nearID = cam.getNearestId(objs);
 			
+			//if suppressed stop following
 			if(suppressed)
 				break;
 			
-			/*if(nearID == -1) {
-				new Graphics().fillRect(0, 0, 100, 63);
-				
-				if(fRobot != -1) {
-					Robot fr = Global.robots[fRobot];
-					float angle = fr.angleTo(Robot.me.getLocation());
-					
-					//if other robot is driving towards us we make a 180° turn reversing the following order
-					if(Math.abs(angle - fr.getHeading()) < 30) {
-						p.rotate(180);
-						fRobot = -1;
-					} else {
-						angle += 180;
-						if(angle >= 360) angle -= 360;
-						float distance = fr.distanceTo(Robot.me.getLocation());
-						move(angle, distance);
-					}
-				}
-				break;
-			}*/
+			//if no object has been detected we have lost the robot we're following -> stop following
 			if(nearID == -1)
 				break;
 			
@@ -81,19 +66,7 @@ public class FollowBehaviour implements Behavior {
 			float distance = nearest.getDistance();
 			float angle = nearest.getAngle();
 			
-			//
-			/*if(r != null) {
-				float rDistance = r.distanceTo(Robot.me.getLocation());
-				float rAngle = r.angleTo(Robot.me.getLocation()) + 180;
-				if(rAngle > 360) rAngle -= 360;
-				if(rAngle < 0) rAngle += 360;
-				float dAngle = angle < 0 ? angle + 360 : angle; 
-				
-				if(Math.abs(rDistance-distance*2) < 30 && Math.abs(dAngle-angle) < 15) {
-					fRobot = nearID;
-				}
-			}*/
-			
+			//check if the position of the detected robot has been received via wifi
 			if(r != null) {
 				float dAngle = r.getHeading()-Robot.me.getHeading();
 				if(dAngle > 360) dAngle -= 360;
@@ -133,10 +106,19 @@ public class FollowBehaviour implements Behavior {
 			//********* DRAWING *********
 		}
 		
+		//the speed might have been changed by the behavior so reset it
 		nav.getMoveController().setTravelSpeed(speed);
 	}
 	
-	public void move(float angle, float distance) {
+	/**
+	 * This method initiates the movements that correspond to a certain
+	 * target robot position.
+	 * @param angle The angle to the target robot in degrees. A negative
+	 * value means that the other robot is to the left and a positive value
+	 * means that the other robot is to the right
+	 * @param distance The distance to the target robot in cm.
+	 */
+	private void move(float angle, float distance) {
 		DifferentialPilot p = (DifferentialPilot)nav.getMoveController();
 		
 		if(Math.abs(angle) > 4) {
@@ -146,6 +128,9 @@ public class FollowBehaviour implements Behavior {
 		}
 	}
 
+	/**
+	 * Suppress this behavior.
+	 */
 	@Override
 	public void suppress() {
 		suppressed = true;

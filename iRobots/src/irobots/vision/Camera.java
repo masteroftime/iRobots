@@ -1,29 +1,32 @@
 package irobots.vision;
 
-import irobots.comm.Robot;
-
 import java.awt.Rectangle;
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.LinkedList;
-
-import javax.microedition.lcdui.Graphics;
 
 import lejos.nxt.SensorPort;
 import lejos.nxt.addon.NXTCam;
 
 /**
  * Abstracts the access to the NXTCam and provides utility functions to
- * read the objects detected by the camera
- * @author martin
- *
+ * read the objects detected by the camera.
  */
 public class Camera {
 
 	private NXTCam cam;
 	
+	/**
+	 * The field of view in degrees of the NXTCam.
+	 */
 	public static final double VIEW_ANGLE = 43;
+	
+	/**
+	 * The resolution in pixels of the NXTCam on the x-axis.
+	 */
 	public static final int SIZE_X = 144;
+	
+	/**
+	 * The resolution in pixels of the NXTCam on the y-axis.
+	 */
 	public static final int SIZE_Y = 88;
 	
 	public Camera() {
@@ -70,6 +73,12 @@ public class Camera {
 		return false;
 	}
 	
+	/**
+	 * Checks if a robot has been detected by the camera.
+	 * <p>This method returns true when an object has been
+	 * detected that belongs to one of the colormaps defined
+	 * for the robots (0,1,2)</p>
+	 */
 	public boolean robotDetected() {
 		int n = cam.getNumberOfObjects();
 		for(int i = 0; i < n; i++) {
@@ -116,6 +125,16 @@ public class Camera {
 		return rob;
 	}*/
 	
+	/**
+	 * <p>Attempts to detect the distance and angle to the
+	 * robot with the given colormap. If the robot is not
+	 * seen by the camera this method returns null.</p>
+	 * 
+	 * <p>This method just checks a single robot with the given
+	 * id. In order to check for all robots use detectRobots()</p>
+	 * @param colormap The colormap(=robot id) of the robot to detect.
+	 * @return The detected robot or null if the robot is not seen by the camera.
+	 */
 	public DetectedObject detectRobot(int colormap) {
 		if(!objectDetected(colormap))
 			return null;
@@ -141,11 +160,6 @@ public class Camera {
 		if(objs.length > 1) {
 			obj = mergeObjects(objs);
 		}
-
-		/*rob = new Robot();
-		rob.setLocation(rob.pointAt((float)getObjectDistance(obj, 10.0, 4.7), (float)getObjectAngle(objs[0])));
-		rob.setHeading((float)(Robot.me.getHeading()+getObjectAngle(obj)));
-		return rob;*/
 		
 		DetectedObject rob = new DetectedObject(obj, colormap);
 		rob.setAngle((float)getObjectAngle(obj));
@@ -154,10 +168,18 @@ public class Camera {
 		return rob;
 	}
 	
+	/**
+	 * Returns the NXTCam object which can be used to interface
+	 * with the NXTCam directly.
+	 */
 	public NXTCam getCamera() {
 		return cam;
 	}
 	
+	/**
+	 * Returns a single rectangle that has been detected by the
+	 * camera which corresponds to the robot with the given id.
+	 */
 	public Rectangle getRobotRectangle(int colormap) {
 		Rectangle[] objs = getObjects(colormap);
 		
@@ -170,6 +192,9 @@ public class Camera {
 		return mergeObjects(objs);
 	}
 	
+	/**
+	 * Returns a single rectangle for the robot which
+	 */
 	public Rectangle getNearestRobotRectangle() {
 		Rectangle[] robs = new Rectangle[3];
 		robs[0] = getRobotRectangle(0);
@@ -188,6 +213,17 @@ public class Camera {
 		return ret;
 	}
 	
+	/**
+	 * This method can be used to find out which of the
+	 * detected objects is closest to the camera. If the
+	 * given does not contain any detected objects (the
+	 * array is empty or all entries are null) this method
+	 * returns -1.
+	 * @param objs The detected objects for which the closest
+	 * should be determined.
+	 * @return The index in the given array of detected objects
+	 * which belongs to the object which is closes to the camera
+	 */
 	public int getNearestId(DetectedObject[] objs) {
 		float distance = Float.MAX_VALUE;
 		int id = -1;
@@ -202,6 +238,13 @@ public class Camera {
 		return id;
 	}
 	
+	/**
+	 * <p>Checks all robots if they can be detected and returns
+	 * an array containing the information about the detected
+	 * robots. The index in the array equals the id of the
+	 * robot. If a robot is not seen by the camera its entry
+	 * in the array is null.
+	 */
 	public DetectedObject[] detectRobots() {
 		DetectedObject[] r = new DetectedObject[3];
 		r[0] = detectRobot(0);
@@ -209,24 +252,6 @@ public class Camera {
 		r[2] = detectRobot(2);
 		
 		return r;
-		
-		/*int c = 0;
-		
-		for(Robot rob : r) {
-			if(rob != null) c++;
-		}
-		
-		Robot[] robs = new Robot[c];
-		c = 0;
-		
-		for(Robot rob : r) {
-			if(rob != null) {
-				robs[c] = rob;
-				c++;
-			}
-		}
-		
-		return robs;*/
 	}
 	
 	/**
@@ -273,6 +298,12 @@ public class Camera {
 		return -(rsize * res) / (psize * 2 * Math.tan(VIEW_ANGLE / 2));
 	}
 	
+	/**
+	 * Merges the given rectangles into a single rectangle by
+	 * filtering out noise and merging the remaining rectangles
+	 * into one.
+	 * @param objs The rectangles to merge.
+	 */
 	public static Rectangle mergeObjects(Rectangle[] objs) {
 		Rectangle r = objs[0];
 		float size = r.height * r.width;
@@ -306,10 +337,22 @@ public class Camera {
 		return r;
 	}
 	
+	/**
+	 * converts the x coordinate from the camera in order to
+	 * display rectangles from the camera on the NXT screen.
+	 * @param x The x coordinate in the camera coordinate system.
+	 * @return The x coordinate in the NXT screen coordinate system.
+	 */
 	public static int camToScreenX(double x) {
 		return (int) ((x/144.0)*100);
 	}
 	
+	/**
+	 * converts the y coordinate from the camera in order to
+	 * display rectangles from the camera on the NXT screen.
+	 * @param y The y coordinate in the camera coordinate system.
+	 * @return The y coordinate in the NXT screen coordinate system.
+	 */
 	public static int camToScreenY(double y) {
 		return (int) ((y/88.0)*63);
 	}

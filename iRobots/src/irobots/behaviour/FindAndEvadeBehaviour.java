@@ -5,13 +5,34 @@ import irobots.comm.Robot;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.subsumption.Behavior;
 
+/**
+ * <p>This behavior uses position data received via wifi in
+ * order to help detect other robots via the camera or to
+ * avoid crashes with other robots</p>
+ * 
+ * <p>When another robot is expected to be in front of this
+ * robot and the other robot is driving in the same direction
+ * as this robot, then we turn to the other robot so that the
+ * camera can detect the other robot and we can start following</p>
+ * 
+ * <p>When the other robot is driving in the opposite direction
+ * than this robot, then we turn away from the other robot in
+ * order to avoid crashing into the other robot.</p>
+ */
 public class FindAndEvadeBehaviour implements Behavior {
 	private volatile boolean suppressed;
 	
+	/**
+	 * Returns the distance from this robot to the given robot
+	 */
 	private float getRobotDistance(Robot r) {
 		return r.distanceTo(Robot.me.getLocation());
 	}
 	
+	/**
+	 * Returns the heading of the given robot relative to the
+	 * heading of this robot.
+	 */
 	private float getRelativeHeading(Robot r) {
 		float head = r.getHeading()-Robot.me.getHeading();
 		if(head > 360) head -= 360;
@@ -20,6 +41,9 @@ public class FindAndEvadeBehaviour implements Behavior {
 		return head;
 	}
 	
+	/**
+	 * Returns the robot which is the nearest to this robot.
+	 */
 	private Robot getNearestRobot() {
 		Robot nearest = null;
 		float dist = 0;
@@ -44,12 +68,24 @@ public class FindAndEvadeBehaviour implements Behavior {
 		return nearest;
 	}
 	
+	/**
+	 * This behavior takes control when another robot is nearer
+	 * than a certain amount to this robot.
+	 */
 	@Override
 	public boolean takeControl() {
 		suppressed = false;
 		return getRobotDistance(getNearestRobot()) < 35;
 	}
 
+	/**
+	 * When the behavior is activated, a robot is in front
+	 * of us and the other robot is driving in the same direction
+	 * we are, then we turn towards the other robot so that
+	 * the other robot can be detected by the camera. When the 
+	 * other robot is driving in the opposite direction the robot
+	 * turns away in order to avoid a crash.
+	 */
 	@Override
 	public void action() {
 		Robot r = getNearestRobot();
@@ -62,31 +98,15 @@ public class FindAndEvadeBehaviour implements Behavior {
 				float heading = getRelativeHeading(r)-180;
 				p.steer(heading*(10/9));
 			}
-				
-				/*float absHead = Math.abs(heading);
-				
-				if(absHead < 45) {
-					//turn+drive
-					p.steer(turnRate)
-				}
-				else if(absHead < 90) {
-					//one wheel turn forward
-				}
-				else if(absHead < 135) {
-					//one wheel turn backward
-				}
-				else {
-					//0-degree turn
-				}else if(Math.abs(angle) > 120) {
-				
-			}*/
 		}
 	}
 
+	/**
+	 * Suppresses this behavior.
+	 */
 	@Override
 	public void suppress() {
-		// TODO Auto-generated method stub
-		
+		suppressed = true;
 	}
 	
 }

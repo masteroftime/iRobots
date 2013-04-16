@@ -1,13 +1,23 @@
 package irobots.comm;
 
+import irobots.Global;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
 import lejos.robotics.localization.PoseProvider;
-import lejos.robotics.navigation.Move;
 import lejos.robotics.navigation.Pose;
-import irobots.Global;
 
+/**
+ * The PositionCoordinator runs in the background
+ * and is responsible for sending the robots position
+ * to the other robots in a regular time interval.
+ * 
+ * It is also responsible for integrating the compass
+ * sensor into the position tracking in order to
+ * achieve more accurate results and to update the
+ * position in Robot.me.
+ */
 public class PositionCoordinator extends Thread
 {
 	private PoseProvider pose;
@@ -40,12 +50,6 @@ public class PositionCoordinator extends Thread
 			
 			Pose p = pose.getPose();
 			p.setHeading(angle);
-			
-			//System.out.println((int)p.getX() + "/" + (int)p.getY());
-			
-			//Move m = Global.navigator.getMoveController().getMovement();
-			
-			
 			
 			Robot.me = Robot.meFromPose(p);
 			pose.setPose(p);
