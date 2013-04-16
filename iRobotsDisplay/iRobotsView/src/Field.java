@@ -9,7 +9,10 @@ import java.awt.geom.*;
 
 import javax.swing.JPanel;
 
-
+/**
+ * This class is responsible for drawing the field and positions
+ * of the robots.
+ */
 public class Field extends JPanel
 {
 	private ArrayList<Message> msg;
@@ -23,13 +26,18 @@ public class Field extends JPanel
 		rsize = 75;
 	}
 	
+	/**
+	 * Adds an update message to the end of the received message
+	 * list and updates the drawing of the robot positions accordingly.
+	 * @param m The message to process
+	 */
 	public void addMessage(Message m)
 	{
 		msg.add(m);
 		updated();
 	}
 	
-	public void initComponents()
+	private void initComponents()
 	{
 		this.setBackground(Color.WHITE);
 	}
@@ -86,6 +94,13 @@ public class Field extends JPanel
         }
 	}
 	
+	/**
+	 * Utility method to draw a triangle for the robot at the end
+	 * of the robot path.
+	 * @param angle The heading of the robot
+	 * @param p The path traveled by the robot
+	 * @param g Graphics to draw to
+	 */
 	private void drawRobot(double angle, Polygon p, Graphics2D g) {
 		if(angle != Double.NaN && p.npoints > 0) {
 			int x = p.xpoints[p.npoints-1];
@@ -101,6 +116,10 @@ public class Field extends JPanel
 		}
 	}
 	
+	/**
+	 * Removes the messages at the end of the list so in order
+	 * to limit the length of the displayed path.
+	 */
 	public void removeMsg()
 	{
 		ArrayList<Message> r0 = new ArrayList<>();
@@ -145,7 +164,12 @@ public class Field extends JPanel
 		}
 	}
 	
-	//called after a new entry in the list
+	/**
+	 * This method should be called every time a new message is
+	 * inserted into the message list. If the received message
+	 * contains a position update the robot display is updated
+	 * accordingly.
+	 */
 	public void updated()
 	{
 		Message m  = msg.get(msg.size()-1); //get me the last element
@@ -156,9 +180,18 @@ public class Field extends JPanel
 		}
 	}
 	
+	/**
+	 * Rotates the whole field around the given angle.
+	 * @param rotation The angle to rotate in degrees
+	 */
 	public void setRotation(int rotation) {
 		this.rotation = rotation;
 		this.invalidate();
 		this.repaint();
+	}
+	
+	public Point screenToRobot(int x, int y) {
+		int field_size = (Math.min(getHeight(), getWidth())*2)/3;
+		return new Point((x*rsize)/field_size, (-(y*rsize)/field_size+rsize));
 	}
 }

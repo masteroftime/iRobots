@@ -1,20 +1,24 @@
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
-
+/**
+ * Displays a compass which is used to display how the field
+ * is rotated.
+ */
 public class Compass extends JComponent {
 	
 	private int rotation;
 	private Image img;
 	
+	/**
+	 * Creates a new compass component.
+	 */
 	public Compass() {
 		try {
 			this.img = ImageIO.read(new File("compass.png"));
@@ -24,6 +28,11 @@ public class Compass extends JComponent {
 		this.setSize(200,200);
 	}
 
+	/**
+	 * Changes the displayed rotation value and updates
+	 * the display.
+	 * @param rotation The angle to display in degrees. 
+	 */
 	public void setRotation(int rotation) {
 		this.rotation = rotation;
 		this.invalidate();

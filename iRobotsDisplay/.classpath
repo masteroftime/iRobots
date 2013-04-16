@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="iRobotsDisplay/src"/>
+	<classpathentry kind="src" path="iRobotsSpoof/src"/>
+	<classpathentry kind="src" path="iRobotsView/src"/>
+	<classpathentry kind="con" path="org.lejos.nxt.ldt.LEJOS_LIBRARY_CONTAINER/nxt"/>
+	<classpathentry kind="output" path="iRobotsDisplay/bin"/>
+</classpath>
