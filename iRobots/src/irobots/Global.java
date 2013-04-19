@@ -23,6 +23,9 @@ import lejos.nxt.Motor;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.navigation.Navigator;
 
+/**
+ * Contains global constants and references to sensors and motors.
+ */
 public class Global 
 {
 	/**

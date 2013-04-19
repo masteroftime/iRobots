@@ -92,6 +92,9 @@ public class FollowBehaviour implements Behavior {
 				move(angle, distance);
 			}
 			
+			if(suppressed)
+				break;
+			
 			//********* DRAWING *********
 			Graphics g = new Graphics();
 			

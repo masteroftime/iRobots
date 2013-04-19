@@ -75,7 +75,12 @@ public class FindAndEvadeBehaviour implements Behavior {
 	@Override
 	public boolean takeControl() {
 		suppressed = false;
-		return getRobotDistance(getNearestRobot()) < 35;
+		
+		Robot r = getNearestRobot();
+		
+		if(r != null) {
+			return getRobotDistance(r) < 35;
+		} else return false;
 	}
 
 	/**

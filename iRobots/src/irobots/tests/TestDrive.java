@@ -31,10 +31,12 @@ public class TestDrive {
 		
 		while(!Button.ESCAPE.isDown());*/
 		
-		nav.addWaypoint(100, 0);
-		nav.addWaypoint(100, 100);
-		nav.followPath();
-		nav.waitForStop();
+		DifferentialPilot p = (DifferentialPilot) nav.getMoveController();
+		
+		p.rotate(360);
+		
+		System.exit(0);
+		
 		
 		/*try {
 			Thread.sleep(1000);

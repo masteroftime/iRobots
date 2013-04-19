@@ -18,15 +18,17 @@ import lejos.robotics.subsumption.Behavior;
  */
 public class LineBehaviour implements Behavior {
 	
-	public static final float FIELD_WIDTH = 25;
-	public static final float FIELD_HEIGHT = 25;
+	public static final float FIELD_WIDTH = 90;
+	public static final float FIELD_HEIGHT = 90;
 	
 	private Navigator nav;
 	private ColorSensor color;
+	private DifferentialPilot pilot;
 	
 	public LineBehaviour() {
 		this.nav = Global.navigator;
 		this.color = Global.color;
+		this.pilot = (DifferentialPilot)nav.getMoveController();
 	}
 
 	/**
@@ -34,7 +36,11 @@ public class LineBehaviour implements Behavior {
 	 */
 	@Override
 	public boolean takeControl() {
-		return color.lineDetected(); 
+		if(color.lineDetected()) {
+			//pilot.stop();
+			return true;
+		}
+		return false; 
 	}
 
 	/**

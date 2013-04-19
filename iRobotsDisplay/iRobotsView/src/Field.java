@@ -23,7 +23,7 @@ public class Field extends JPanel
 	{
 		initComponents();
 		msg = new ArrayList<>();
-		rsize = 75;
+		rsize = 90;
 	}
 	
 	/**

@@ -1,4 +1,8 @@
 irobots
 irobots.behaviour
 irobots.comm
+irobots.motion
+irobots.tests
 irobots.vision
+lejos.internal.io
+lejos.nxt.addon

@@ -4,6 +4,7 @@ package irobots.motion;
 import lejos.nxt.Motor;
 import lejos.nxt.NXTRegulatedMotor;
 
+@Deprecated
 public class MotorController 
 {
 	public final static int SPEED = 500;
